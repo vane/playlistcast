@@ -5,6 +5,11 @@ dist
 prosecco.egg-info
 *.pyc
 
+# JS
+frontend/build
+frontend/yarn.lock
+frontend/node_modules
+
 # OS
 .DS_Store
 
