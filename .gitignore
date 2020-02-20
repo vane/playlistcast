@@ -1,0 +1,16 @@
+# Python
+__pycache__
+build
+dist
+prosecco.egg-info
+*.pyc
+
+# OS
+.DS_Store
+
+# IDE
+*.iml
+
+# temp
+test/
+main.py
