@@ -21,7 +21,7 @@ class PlayerTime:
         if self.current and self.duration:
             cdelta = timedelta(seconds=self.current)
             ddelta = timedelta(seconds=self.duration)
-            return f'{lib.util.strfdelta(cdelta, "%H:%M:%S")}/{lib.util.strfdelta(ddelta, "%H:%M:%S")}'
+            return f'{playlistcast.util.strfdelta(cdelta, "%H:%M:%S")}/{playlistcast.util.strfdelta(ddelta, "%H:%M:%S")}'
         return '00:00:00/00:00:00'
 
     @property
@@ -95,8 +95,10 @@ class ChromeCast:
     def _start(self):
         # find and wait for chromecast
         chromecasts = pychromecast.get_chromecasts()
-        self.cast = chromecasts[0]
-        self.cast.wait(timeout=30)
+        for ch in chromecasts:
+            if ch.name == 'Hell TV':
+                self.cast = chromecasts[0]
+                self.cast.wait(timeout=30)
         print(self.cast.status)
         # media controller
         self.media_controller = self.cast.media_controller
