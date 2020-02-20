@@ -1,0 +1,36 @@
+{
+  "name": "playlistcast-frontend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Michal Szczepanski <michal@vane.pl>",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "postinstall": "webpack",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.4",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link": "^1.2.12",
+    "apollo-link-http": "^1.5.15",
+    "apollo-link-ws": "^1.0.18",
+    "dateformat": "^3.0.3",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "subscriptions-transport-ws": "^0.9.16"
+  }
+}
