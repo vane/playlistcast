@@ -13,4 +13,4 @@ prosecco.egg-info
 
 # temp
 test/
-main.py
+dummy_play.py

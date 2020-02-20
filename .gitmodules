@@ -1,0 +1,3 @@
+[submodule "vendor/tornadoql"]
+	path = vendor/tornadoql
+	url = https://github.com/IlyaRadinsky/tornadoql
