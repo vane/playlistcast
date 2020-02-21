@@ -1,10 +1,7 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+import timeSubscribe from './service/time';
+import PlaylistCast from './view/playlistcast';
 
-const PlaylistCast = () => {
-  return (<div>
-    <h1>FRONTEND</h1>
-  </div>)
-}
-
+timeSubscribe();
 ReactDOM.render(<PlaylistCast />, document.getElementById('app'));
