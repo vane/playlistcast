@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import graphene
-from rx.subject import Subject
+from rx.subjects import Subject
 
 
 class TimeMessage(graphene.ObjectType):

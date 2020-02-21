@@ -12,7 +12,7 @@ class DeviceInput(graphene.InputObjectType):
     name = graphene.String(required=True)
 
 class Post(graphene.Mutation):
-    class Input:
+    class Arguments:
         data = graphene.Argument(DeviceInput, required=True)
 
     Output = Device
@@ -22,7 +22,7 @@ class Post(graphene.Mutation):
         return model
 
 class Put(graphene.Mutation):
-    class Input:
+    class Arguments:
         id = graphene.ID(required=True)
         data = graphene.Argument(DeviceInput, required=True)
 
@@ -33,7 +33,7 @@ class Put(graphene.Mutation):
         return model
 
 class Delete(graphene.Mutation):
-    class Input:
+    class Arguments:
         id = graphene.ID(required=True)
 
     Output = Device

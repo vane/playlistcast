@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import logging
 import graphene
 import tornado.web
 import tornado.ioloop
@@ -25,6 +26,7 @@ class IndexHandler(tornado.web.RequestHandler):
             self.finish(f.read())
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     # configuration
     debug = False
     port = 9666
@@ -42,6 +44,8 @@ if __name__ == '__main__':
     ]
     app = tornado.web.Application(endpoints)
     app.listen(port, "0.0.0.0")
+
+    import playlistcast.scheduler
 
     tornado.ioloop.IOLoop.current().start()
 

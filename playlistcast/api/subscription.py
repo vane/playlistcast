@@ -9,6 +9,7 @@ class Subscription(graphene.ObjectType):
         description = 'Subscriptions'
 
     time = graphene.Field(TimeMessage)
+
     device = graphene.Field(device.Device)
 
     def resolve_time(self, info):
