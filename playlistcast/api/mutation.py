@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Mutation"""
 import graphene
-from .model import device
+from .model import firststart
 
 
 class Mutation(graphene.ObjectType):
+    """Mutation"""
     class Meta:
+        """API Description"""
         description = 'Mutations'
 
-    postDevice = device.Post.Field()
-    putDevice = device.Put.Field()
-    delDevice = device.Delete.Field()
+    postFirstStart = firststart.Post.Field()

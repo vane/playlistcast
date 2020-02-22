@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+#   W0613 = Unused argument
+#   R0201 = Method could be a function
+#   R0903 = Too few public methods
+#   C0103 = Invalid name
+disable=W0613,R0201,R0903,C0103
+
+[DESIGN]
+min-public-methods=2

@@ -1,31 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""M3U playlist format"""
 import pathlib
-import random
-import copy
-import time
 import logging
-import requests
 from typing import List, Dict, Any
+import requests
 
-log = logging.getLogger('playlistcast.m3u')
+LOG = logging.getLogger('playlistcast.protocol.m3u')
 
 
 class PlayIndex:
-    def __init__(self, start:int=0, end:int=0, current:int=None):
+    """PlayIndex"""
+    def __init__(self, start: int = 0, end: int = 0, current: int = None):
         self.start = start
         self.end = end
         self.current = current
 
     def next(self) -> int:
+        """Increment current index"""
         if self.current is None or self.current >= self.end:
             self.current = self.start
         else:
             self.current += 1
-        log.debug('PlayIndex.next {}'.format(self.current))
+        LOG.debug('PlayIndex.next %s', self.current)
         return self.current
 
     def to_dict(self) -> Dict:
+        """Playlist as dictionary"""
         return {
             'start': self.start,
             'end': self.end,
@@ -33,29 +34,35 @@ class PlayIndex:
         }
 
     @staticmethod
-    def fromdict(data:Any):
+    def fromdict(data: Any):
+        """Playlist index"""
         return PlayIndex(start=data['start'], end=data['end'], current=data['current'])
 
 class PlaylistItem:
-    def __init__(self, basepath:str='', path:str='', name:str=''):
+    """Playlist item"""
+    def __init__(self, basepath: str = '', path: str = '', name: str = ''):
         self._basepath = basepath
         self._path = path
         self._name = name
 
     @property
     def path(self) -> str:
+        """Item path"""
         return '{}/{}'.format(self._basepath, self._path)
 
     @property
     def name(self) -> str:
+        """Item name"""
         return self._name
 
     def __repr__(self):
         return self.path
 
 class FileLoader:
+    """FileLoader"""
     @staticmethod
-    def load_disk_file(fpath:str) -> (str, str):
+    def load_disk_file(fpath: str) -> (str, str):
+        """Load file from disk"""
         # check path
         path = pathlib.Path(fpath)
         if not path.exists():
@@ -68,34 +75,39 @@ class FileLoader:
         return data, basepath
 
     @staticmethod
-    def load_http_file(fpath:str) -> (str, str):
+    def load_http_file(fpath: str) -> (str, str):
+        """Load file from http"""
         resp = requests.get(fpath)
         basepath = '/'.join(resp.url.split('/')[:-1])
         return resp.content.decode(), basepath
 
 class M3UPlaylist:
-    def __init__(self, index_default:PlayIndex=None):
+    """M3UPlaylist"""
+    def __init__(self, index_default: PlayIndex = None):
         self._items = [PlaylistItem()]
         self._index = PlayIndex()
         self._index_default = index_default
 
     @property
     def items(self) -> List[PlaylistItem]:
+        """Get list of PlaylistItem"""
         return self._items
 
     @property
-    def index(self) -> int:
+    def index(self) -> PlayIndex:
+        """Get play index"""
         return self._index
 
     # PUBLIC
-    def load(self, fpath:str):
+    def load(self, fpath: str):
+        """Load m3u playlist from file"""
         data, basepath = self._load_file(fpath)
         a = data.split('\n')
         # check first line
         if a[0].startswith('#EXTM3U'):
             # find first item and parse
             found = False
-            for i in range(0, len(a)):
+            for i in a:
                 if a[i].startswith('#EXTINF'):
                     # check if last line is empty string
                     found = True
@@ -114,15 +126,18 @@ class M3UPlaylist:
             raise ValueError('Invalid file content')
 
     def set_index(self, index: PlayIndex):
+        """Change index"""
         self._index = index
 
     def next(self) -> PlaylistItem:
+        """Next PlaylistItem"""
         item = self.items[self._index.next()]
-        log.debug('M3UPlaylist.next {} {}'.format(item.path, item.name))
+        LOG.debug('M3UPlaylist.next %s %s', item.path, item.name)
         return item
 
     # PRIVATE
-    def _parse_playlist(self, basepath:str, data:List) -> List[PlaylistItem]:
+    def _parse_playlist(self, basepath: str, data: List) -> List[PlaylistItem]:
+        """"Parse m3u playlist"""
         name = None
         out = []
         for el in data:
@@ -133,8 +148,8 @@ class M3UPlaylist:
                 out.append(item)
         return out
 
-    def _load_file(self, fpath:str) -> (str, str):
+    def _load_file(self, fpath: str) -> (str, str):
+        """Load m3u file from various locations"""
         if fpath.startswith('http'):
             return FileLoader.load_http_file(fpath)
-        else:
-            return FileLoader.load_disk_file(fpath)
+        return FileLoader.load_disk_file(fpath)
