@@ -107,8 +107,8 @@ class M3UPlaylist:
         if a[0].startswith('#EXTM3U'):
             # find first item and parse
             found = False
-            for i in a:
-                if a[i].startswith('#EXTINF'):
+            for i, item in enumerate(a):
+                if item.startswith('#EXTINF'):
                     # check if last line is empty string
                     found = True
                     if not a[-1]:

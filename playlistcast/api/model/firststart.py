@@ -12,12 +12,12 @@ class FirstStart(graphene.ObjectType):
 
 class FirstStartInput(graphene.InputObjectType):
     """FirstStartInput"""
-    name = graphene.Boolean(required=True)
+    value = graphene.Boolean(required=True)
 
 
 class Post(graphene.Mutation):
     """Post"""
-    class Input:
+    class Arguments:
         """Input argument"""
         data = graphene.Argument(FirstStartInput, required=True)
 

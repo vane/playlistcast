@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 """Cache - temporary before database introduction"""
 
-FIRST_START = False
+FIRST_START = True

@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index.jsx',
   output: {
     path: __dirname + '/build',
-    filename: 'index.[hash].js',
+    filename: mode == 'production' ? 'index.[hash].js' : 'index.js',
     library: 'Playlistcast',
     libraryTarget: 'umd',
     publicPath: '/static/'
