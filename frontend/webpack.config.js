@@ -2,13 +2,14 @@ const webpack = require('webpack');
 const Html = require('html-webpack-plugin');
 const Copy = require('copy-webpack-plugin');
 
+const mode = 'development'
 
 module.exports = {
-  mode: 'development',
+  mode,
   entry: './src/index.jsx',
   output: {
     path: __dirname + '/build',
-    filename: mode == 'production' ? 'index.[hash].js' : 'index.js',
+    filename: mode === 'production' ? 'index.[hash].js' : 'index.js',
     library: 'Playlistcast',
     libraryTarget: 'umd',
     publicPath: '/static/'
