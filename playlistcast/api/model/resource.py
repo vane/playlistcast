@@ -16,9 +16,7 @@ class ResourceAuth(graphene.ObjectType):
     password = graphene.String()
 
 
-class DiskResource(graphene.ObjectType):
-    """DiskResource"""
-    name = graphene.String()
-    location = graphene.String()
-    protocol = graphene.String()
-    authentication = ResourceAuth()
+class ResourceAuthInput(graphene.InputObjectType):
+    """ResourceAuthInput"""
+    username = graphene.String(required=True)
+    password = graphene.String(required=True)

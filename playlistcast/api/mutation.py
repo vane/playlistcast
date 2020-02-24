@@ -3,12 +3,17 @@
 """Mutation"""
 import graphene
 from .model import firststart
+from .model import resource_location
 
 
 class Mutation(graphene.ObjectType):
     """Mutation"""
     class Meta:
         """API Description"""
-        description = 'Mutations'
+        description = 'Mutation'
 
     postFirstStart = firststart.Post.Field()
+
+    postResourceLocation = resource_location.Post.Field()
+    putResourceLocation = resource_location.Put.Field()
+    delResourceLocation = resource_location.Delete.Field()

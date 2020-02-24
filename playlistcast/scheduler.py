@@ -16,7 +16,7 @@ def time_task():
     print("test_task run : ", t)
 
 
-@aiocron.crontab('* * * * * 0', start=True)
+@aiocron.crontab('* * * * 0 0', start=True)
 def find_upnp_task():
     """Find upnp devices every minute"""
     ssdp.find_upnp_services()
