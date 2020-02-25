@@ -31,10 +31,12 @@ mutation post($data: ResourceLocationInput!) {
 `;
 
 const PUT = () => gql`
-mutation put($data: ResourceLocation!, $id:ID!) {
-  putResourceLocation(data:$data, id:$id) {
+mutation put($data: ResourceLocationInput!, $name:String!) {
+  putResourceLocation(data:$data, name:$name) {
     id,
-    name
+    name,
+    location,
+    protocol 
   }
 }
 `;
@@ -64,10 +66,10 @@ export const resourceLocationAdd = (store, data) => client.mutate({
   resourceLocationAll(store);
 }).catch((error) => console.error(error));
 
-export const resourceLocationEdit = (store, data, id) => client.mutate({
+export const resourceLocationEdit = (store, data, name) => client.mutate({
   variables: {
-    ...data,
-    id,
+    data,
+    name,
   },
   mutation: PUT(),
 }).then(() => {

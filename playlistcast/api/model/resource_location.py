@@ -58,6 +58,9 @@ class Put(graphene.Mutation):
         if name not in cache.RESOURCE_LOCATION:
             raise RuntimeError("Invalid name {}".format(name))
         model = cache.RESOURCE_LOCATION[name]
+        model.name = data.name
+        model.location = data.location
+        model.protocol = data.protocol
         SubscriptionModel.resource_location.on_next(model)
         return model
 

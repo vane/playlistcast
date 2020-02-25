@@ -10,6 +10,7 @@ export class Store {
 
   setState(data) {
     this.initialized = true;
+    // console.log(data);
     Object.keys(data).forEach((key) => {
       this[key] = data[key];
     });
