@@ -5,5 +5,8 @@
 #   C0103 = Invalid name
 disable=W0613,R0201,R0903,C0103
 
+[TYPECHECK]
+ignored-classes=scoped_session
+
 [DESIGN]
 min-public-methods=2

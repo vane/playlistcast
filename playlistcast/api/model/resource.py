@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """Files browser"""
 import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType
+from playlistcast import db
 
 
 class File(graphene.ObjectType):
@@ -10,10 +12,12 @@ class File(graphene.ObjectType):
     is_directory = graphene.Boolean()
 
 
-class ResourceAuth(graphene.ObjectType):
+class ResourceAuth(SQLAlchemyObjectType):
     """ResourceAuth"""
-    username = graphene.String()
-    password = graphene.String()
+    class Meta:
+        """Describes ResourceAuth"""
+        model = db.ResourceAuth
+        interfaces = (db.Node, )
 
 
 class ResourceAuthInput(graphene.InputObjectType):

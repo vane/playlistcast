@@ -35,7 +35,7 @@ const ResourceLocationTable = () => {
         <tr>
           <th>Name</th>
           <th>Location</th>
-          <th>Item</th>
+          <th>Protocol</th>
           <th> </th>
         </tr>
       </thead>
@@ -60,11 +60,11 @@ const ResourceLocationRow = (data) => {
   };
 
   const handleDelete = () => {
-    resourceLocationDel(resourceLocationStore, name);
+    resourceLocationDel(resourceLocationStore, d.id);
   };
 
   const handleSave = () => {
-    resourceLocationEdit(resourceLocationStore, { name, location, protocol }, name);
+    resourceLocationEdit(resourceLocationStore, { name, location, protocol }, d.id);
     setEditing(false);
   };
 

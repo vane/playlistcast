@@ -7,7 +7,7 @@ from playlistcast.protocol import ssdp
 from .api.subscription import TimeMessage, SubscriptionModel
 
 
-@aiocron.crontab('* * * * * */1', start=True)
+@aiocron.crontab('* * * * * */30', start=True)
 def time_task():
     """Sends time every second"""
     t = datetime.now()

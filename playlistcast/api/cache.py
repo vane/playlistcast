@@ -3,5 +3,3 @@
 """Cache - temporary before database introduction"""
 
 FIRST_START = True
-RESOURCE_LOCATION = {}
-INDEX = 0

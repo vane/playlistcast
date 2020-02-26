@@ -11,10 +11,10 @@ query {
   } 
 }`;
 
-const DELETE = (name) => gql`
+const DELETE = (id) => gql`
 mutation {
-  delResourceLocation(name:"${name}") {
-    name
+  delResourceLocation(id:"${id}") {
+    id
   }
 }
 `;
@@ -31,8 +31,8 @@ mutation post($data: ResourceLocationInput!) {
 `;
 
 const PUT = () => gql`
-mutation put($data: ResourceLocationInput!, $name:String!) {
-  putResourceLocation(data:$data, name:$name) {
+mutation put($data: ResourceLocationInput!, $id:ID!) {
+  putResourceLocation(data:$data, id:$id) {
     id,
     name,
     location,
@@ -53,8 +53,8 @@ export const resourceLocationAll = (store) => client.query({
   console.log('resourceLocationAll.setState', store.allResourceLocation);
 }).catch((error) => console.error(error));
 
-export const resourceLocationDel = (store, name) => client.mutate({
-  mutation: DELETE(name),
+export const resourceLocationDel = (store, id) => client.mutate({
+  mutation: DELETE(id),
 }).then(() => {
   resourceLocationAll(store);
 }).catch((error) => console.error(error));
@@ -66,10 +66,10 @@ export const resourceLocationAdd = (store, data) => client.mutate({
   resourceLocationAll(store);
 }).catch((error) => console.error(error));
 
-export const resourceLocationEdit = (store, data, name) => client.mutate({
+export const resourceLocationEdit = (store, data, id) => client.mutate({
   variables: {
     data,
-    name,
+    id,
   },
   mutation: PUT(),
 }).then(() => {
