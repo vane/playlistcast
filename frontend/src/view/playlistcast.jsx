@@ -7,6 +7,18 @@ import { firstStartGet } from '../service/firststart';
 import MenuComponent from './menu';
 import ResourceLocationComponent from './resourcelocation';
 
+
+/* Styles */
+const container = {
+  display: 'flex',
+};
+
+const content = {
+  paddingLeft: '20px',
+};
+
+/* Components */
+
 const PlaylistCast = () => {
   const [firstStart, setFirstStart] = useState(firstStartStore.value);
   const [menuIndex, setMenuIndex] = useState(menuStore.index);
@@ -33,14 +45,14 @@ const PlaylistCast = () => {
     startComponent = <FirstStartComponent />;
   }
   return (
-    <div>
+    <div style={container}>
       <div>
         {startComponent}
       </div>
       <div>
         <MenuComponent />
       </div>
-      <div>
+      <div style={content}>
         {component}
       </div>
       <div>
