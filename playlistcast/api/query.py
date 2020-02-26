@@ -44,8 +44,3 @@ class Query(graphene.ObjectType):
         """Return ResourceLocation"""
         id = from_global_id(id)[1]
         return ResourceLocation.get_node(info, id)
-
-    def resolve_allResourceLocation(self, info: ResolveInfo) -> List[ResourceLocation]:
-        """Return list of ResourceLocation objects"""
-        vals = list(cache.RESOURCE_LOCATION.values())
-        return vals
