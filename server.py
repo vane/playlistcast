@@ -8,6 +8,7 @@ import graphene
 import tornado.web
 import tornado.ioloop
 from playlistcast.api import Subscription, Query, Mutation
+from playlistcast.api import browse
 
 # https://stackoverflow.com/a/18812776
 # Add vendor directory to module search path
@@ -29,13 +30,6 @@ class IndexHandler(tornado.web.RequestHandler):
         with open(path, 'rb') as file:
             self.finish(file.read())
 
-class ResourceHandler(tornado.web.RequestHandler):
-    """Serve attached resources"""
-    # pylint: disable=W0223
-    def get(self):
-        """Get request"""
-        print(self.path_kwargs, self.path_args)
-        self.finish('')
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -54,7 +48,7 @@ if __name__ == '__main__':
         (r'/graphiql', GraphiQLHandler),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': STATIC_PATH}),
         (r'/', IndexHandler),
-        (r'/resource/(.*)', ResourceHandler),
+        (r'/resource/(.*)', browse.BrowseResourceHandler),
     ]
     APP = tornado.web.Application(ENDPOINTS)
     APP.listen(PORT, HOST)

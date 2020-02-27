@@ -36,11 +36,11 @@ class Query(graphene.ObjectType):
         fs.value = cache.FIRST_START
         return fs
 
-    def resolve_all_resource_location(self, info):
+    def resolve_all_resource_location(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
         return ResourceLocation.get_query(info).all()
 
-    def resolve_resource_location(self, info, id):
+    def resolve_resource_location(self, info: ResolveInfo, id: graphene.ID) -> ResourceLocation:
         """Return ResourceLocation"""
         id = from_global_id(id)[1]
         return ResourceLocation.get_node(info, id)
