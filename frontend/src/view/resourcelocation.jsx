@@ -102,7 +102,7 @@ const ResourceLocationRow = (data) => {
   }
   return (
     <tr>
-      <td>{name}</td>
+      <td><a href={`/resource/${name}`}>{name}</a></td>
       <td>{location}</td>
       <td>{protocol}</td>
       <td>
