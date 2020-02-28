@@ -3,10 +3,12 @@
 """Chromecast"""
 import time
 import logging
+from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-import playlistcast.util
+from playlistcast.api.model.device import ChromecastDevice
+from playlistcast import util
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
 DEBUG = False
@@ -23,8 +25,8 @@ class PlayerTime:
         if self.current and self.duration:
             cdelta = timedelta(seconds=self.current)
             ddelta = timedelta(seconds=self.duration)
-            current = playlistcast.util.strfdelta(cdelta, "%H:%M:%S")
-            duration = playlistcast.util.strfdelta(ddelta, "%H:%M:%S")
+            current = util.strfdelta(cdelta, "%H:%M:%S")
+            duration = util.strfdelta(ddelta, "%H:%M:%S")
             return f'{current}/{duration}'
         return '00:00:00/00:00:00'
 
@@ -35,7 +37,7 @@ class PlayerTime:
             return f'{self.current/self.duration*100:0.1f}%'
         return '0%'
 
-class ChromeCast:
+class DummyChromeast:
     """Chromecast"""
     def __init__(self, media_url: str, media_type: str = 'video/mp4', name: str = 'Hell TV'):
         self._media_url = media_url
@@ -118,3 +120,15 @@ class ChromeCast:
         """ Subscribe for chromecast status messages"""
         #LOG.debug(status)
         pass
+
+
+def list_devices() -> List[ChromecastDevice]:
+    chromecasts = pychromecast.get_chromecasts()
+    output = []
+    for pych in chromecasts:
+        ch = ChromecastDevice()
+        for attr in ch.__dict__:
+            value = getattr(pych, attr)
+            setattr(ch, attr, value)
+        output.append(ch)
+    return output

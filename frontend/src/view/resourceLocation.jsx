@@ -4,7 +4,7 @@ import {
   resourceLocationAdd,
   resourceLocationDel,
   resourceLocationEdit,
-} from '../service/resourcelocation';
+} from '../service/resourceLocation';
 import resourceLocationStore from '../store/resourceLocationStore';
 
 const ResourceLocationComponent = () => (

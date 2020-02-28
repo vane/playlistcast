@@ -16,7 +16,7 @@ const MenuComponent = () => {
 
   const handleDeviceClick = () => {
     menuStore.setState({
-      index: 'device',
+      index: 'chromecast',
     });
     menuStore.refresh('index');
   };

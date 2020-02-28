@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import TimeComponent from './time';
-import FirstStartComponent from './firststart';
+import FirstStartComponent from './firstStart';
 import firstStartStore from '../store/firstStartStore';
 import menuStore from '../store/menuStore';
-import { firstStartGet } from '../service/firststart';
+import { firstStartGet } from '../service/firstStart';
 import MenuComponent from './menu';
-import ResourceLocationComponent from './resourcelocation';
-import DeviceComponent from './device';
+import ResourceLocationComponent from './resourceLocation';
+import ChromecastDeviceComponent from './device';
 
 
 /* Styles */
@@ -40,8 +40,8 @@ const PlaylistCast = () => {
   if (firstStart === null) firstStartGet(firstStartStore);
   if (menuIndex === 'location') {
     component = <ResourceLocationComponent />;
-  } else if (menuIndex === 'device') {
-    component = <DeviceComponent />;
+  } else if (menuIndex === 'chromecast') {
+    component = <ChromecastDeviceComponent />;
   }
   let startComponent = null;
   if (firstStart) {
