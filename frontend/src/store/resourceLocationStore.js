@@ -1,4 +1,4 @@
-import { Store } from '../state';
+import Store from '../state';
 
 /* ResourceLocation */
 const resourceLocationStore = new Store({

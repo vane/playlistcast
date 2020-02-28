@@ -20,7 +20,7 @@ const chromecastDeviceAll = (store) => client.query({
   store.setState({
     chromecast: resp.data.allChromecastDevice,
   });
-  store.refresh();
+  store.refresh('chromecast');
   console.log('chromecastDeviceAll.setState', store.chromecast);
 }).catch((error) => console.error(error));
 

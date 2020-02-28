@@ -1,4 +1,4 @@
-import { Store } from '../state';
+import Store from '../state';
 
 /* Firststart */
 const firstStartStore = new Store({
