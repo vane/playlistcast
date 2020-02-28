@@ -6,6 +6,7 @@ import menuStore from '../store/menuStore';
 import { firstStartGet } from '../service/firststart';
 import MenuComponent from './menu';
 import ResourceLocationComponent from './resourcelocation';
+import DeviceComponent from './device';
 
 
 /* Styles */
@@ -39,6 +40,8 @@ const PlaylistCast = () => {
   if (firstStart === null) firstStartGet(firstStartStore);
   if (menuIndex === 'location') {
     component = <ResourceLocationComponent />;
+  } else if (menuIndex === 'device') {
+    component = <DeviceComponent />;
   }
   let startComponent = null;
   if (firstStart) {
