@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import chromecastDeviceAll from '../service/device';
 import deviceStore from '../store/deviceStore';
 
 const ChromecastDeviceComponent = () => {
@@ -9,7 +8,6 @@ const ChromecastDeviceComponent = () => {
   };
 
   deviceStore.setCallback('chromecast', handleChromecastChange);
-  chromecastDeviceAll(deviceStore);
   const device = [];
   chromecastList.forEach((el) => {
     device.push(<p key={el.uuid}>{el.name}</p>);

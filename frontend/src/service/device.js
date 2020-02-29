@@ -9,7 +9,19 @@ query {
     isIdle,
     uri,
     host,
-    port
+    port,
+    mediaController {
+      appId,
+      isActive,
+      isIdle,
+      isPaused,
+      isPlaying,
+      mediaSessionId,
+      status {
+        title,
+        contentType
+      }
+    }
   } 
 }`;
 

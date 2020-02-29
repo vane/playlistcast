@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  resourceLocationAll,
-  resourceLocationAdd,
-  resourceLocationDel,
-  resourceLocationEdit,
-} from '../service/resourceLocation';
+import { resourceLocationAdd, resourceLocationDel, resourceLocationEdit } from '../service/resourceLocation';
 import resourceLocationStore from '../store/resourceLocationStore';
 
 const ResourceLocationComponent = () => (
@@ -22,7 +17,6 @@ const ResourceLocationTable = () => {
   };
 
   resourceLocationStore.setCallback('location', handleLocationChange);
-  resourceLocationAll(resourceLocationStore);
 
   const locations = [];
   locationList.forEach((el) => {

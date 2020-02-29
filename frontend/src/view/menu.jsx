@@ -1,5 +1,9 @@
 import React from 'react';
 import menuStore from '../store/menuStore';
+import chromecastDeviceAll from '../service/device';
+import deviceStore from '../store/deviceStore';
+import { resourceLocationAll } from '../service/resourceLocation';
+import resourceLocationStore from '../store/resourceLocationStore';
 
 const container = {
   display: 'flex',
@@ -12,6 +16,7 @@ const MenuComponent = () => {
       index: 'location',
     });
     menuStore.refresh('index');
+    resourceLocationAll(resourceLocationStore);
   };
 
   const handleDeviceClick = () => {
@@ -19,6 +24,7 @@ const MenuComponent = () => {
       index: 'chromecast',
     });
     menuStore.refresh('index');
+    chromecastDeviceAll(deviceStore);
   };
   return (
     <div>
