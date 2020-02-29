@@ -7,7 +7,7 @@ from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-from playlistcast.api.model.device import ChromecastDevice
+from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus
 from playlistcast import util
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
@@ -126,9 +126,25 @@ def list_devices() -> List[ChromecastDevice]:
     chromecasts = pychromecast.get_chromecasts()
     output = []
     for pych in chromecasts:
+        pych.wait(timeout=30)
         ch = ChromecastDevice()
         for attr in ch.__dict__:
+            if attr == 'media_controller':
+                continue
             value = getattr(pych, attr)
             setattr(ch, attr, value)
+        pych.media_controller.block_until_active(timeout=30)
+        mc = MediaController()
+        for attr in mc.__dict__:
+            if attr == 'status':
+                continue
+            value = getattr(pych.media_controller, attr)
+            setattr(mc, attr, value)
+        ms = MediaStatus()
+        for attr in ms.__dict__:
+            value = getattr(pych.media_controller.status, attr)
+            setattr(ms, attr, value)
+        mc.status = ms
+        ch.media_controller = mc
         output.append(ch)
     return output

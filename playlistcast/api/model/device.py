@@ -15,7 +15,7 @@ class MediaStatus(graphene.ObjectType):
     duration = graphene.Int()
     episode = graphene.String()
     idle_reason = graphene.String()
-    last_update = graphene.String()
+    last_updated = graphene.String()
     media_is_generic = graphene.Boolean()
     media_is_movie = graphene.Boolean()
     media_is_musictrack = graphene.Boolean()
@@ -52,7 +52,7 @@ class MediaController(graphene.ObjectType):
     is_paused = graphene.Boolean()
     is_playing = graphene.Boolean()
     media_session_id = graphene.Int()
-    status = MediaStatus()
+    status = graphene.Field(MediaStatus)
 
 class ChromecastDevice(graphene.ObjectType):
     name = graphene.String()
@@ -61,7 +61,7 @@ class ChromecastDevice(graphene.ObjectType):
     uri = graphene.String()
     host = graphene.String()
     port = graphene.Int()
-    media_controller = MediaController()
+    media_controller = graphene.Field(MediaController)
 
 
 class UPNPDevice(graphene.ObjectType):
