@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """First start state"""
 import graphene
-from playlistcast.api import cache
+from playlistcast import cache
 
 
 class FirstStart(graphene.ObjectType):

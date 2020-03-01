@@ -5,8 +5,7 @@ import os
 from typing import Optional
 import urllib.parse
 import tornado.web
-from playlistcast import db
-from playlistcast.api import error
+from playlistcast import db, error
 
 
 class BrowseResourceHandler(tornado.web.StaticFileHandler):

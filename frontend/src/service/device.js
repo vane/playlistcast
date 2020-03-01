@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import client from './client';
 
-const GET = () => gql`
+const ALL = () => gql`
 query {
- allChromecastDevice {
+ chromecastDeviceAll {
     name,
     uuid,
     isIdle,
@@ -19,18 +19,20 @@ query {
       mediaSessionId,
       status {
         title,
-        contentType
+        contentType,
+        volumeLevel,
+        volumeMuted
       }
     }
   } 
 }`;
 
 const chromecastDeviceAll = (store) => client.query({
-  query: GET(),
+  query: ALL(),
   fetchPolicy: 'network-only',
 }).then((resp) => {
   store.setState({
-    chromecast: resp.data.allChromecastDevice,
+    chromecast: resp.data.chromecastDeviceAll,
   });
   store.refresh('chromecast');
   console.log('chromecastDeviceAll.setState', store.chromecast);

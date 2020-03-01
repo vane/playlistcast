@@ -20,7 +20,7 @@ Base.query = session.query_property()
 class ResourceLocation(Base):
     """ResourceLocation"""
     __tablename__ = 'resource_location'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True) # pylint: disable=W0622
     name = Column(String, unique=True)
     location = Column(String)
     protocol = Column(String)
@@ -29,7 +29,7 @@ class ResourceLocation(Base):
 class ResourceAuth(Base):
     """ResourceAuthentication"""
     __tablename__ = 'resource_auth'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True) # pylint: disable=W0622
     username = Column(String)
     password = Column(String)
     location_id = Column(Integer, ForeignKey('resource_location.id'))
@@ -47,7 +47,7 @@ class Node(AbstractNode):
         return NodeField(cls, *args, **kwargs)
 
     @classmethod
-    def node_resolver(cls, only_type, root, info, id):
+    def node_resolver(cls, only_type, root, info, id):  # pylint: disable=W0622
         """node_resolver"""
         return cls.get_node_from_global_id(info, id, only_type=only_type)
 
@@ -80,7 +80,7 @@ class Node(AbstractNode):
         return from_global_id(global_id)
 
     @classmethod
-    def to_global_id(cls, type, id):
+    def to_global_id(cls, type, id): # pylint: disable=W0622
         """to_global_id"""
         return to_global_id(type, id)
 

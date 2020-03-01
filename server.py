@@ -3,10 +3,12 @@
 """Runs playlistcast media server"""
 import os
 import sys
+import asyncio
 import logging
 import graphene
 import tornado.web
 import tornado.ioloop
+from playlistcast.protocol import chromecast, ssdp
 from playlistcast.api import Subscription, Query, Mutation
 from playlistcast.api import browse
 
@@ -20,6 +22,7 @@ from tornadoql.tornadoql import GraphQLSubscriptionHandler, GraphQLHandler, Grap
 
 
 STATIC_PATH = os.path.abspath('frontend/build')
+LOG = logging.getLogger('playlistcast')
 
 class IndexHandler(tornado.web.RequestHandler):
     """Serve index.html"""
@@ -30,6 +33,13 @@ class IndexHandler(tornado.web.RequestHandler):
         with open(path, 'rb') as file:
             self.finish(file.read())
 
+
+def startup():
+    """Run some scheduled tasks on start"""
+    loop = asyncio.get_event_loop()
+    loop.create_task(ssdp.find_upnp_services())
+    loop.create_task(chromecast.list_devices())
+    LOG.debug('startup tasks complete')
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -53,6 +63,6 @@ if __name__ == '__main__':
     APP = tornado.web.Application(ENDPOINTS)
     APP.listen(PORT, HOST)
 
-    import playlistcast.scheduler # pylint: disable=W0611
+    startup()
 
     tornado.ioloop.IOLoop.current().start()

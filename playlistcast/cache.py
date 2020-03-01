@@ -3,3 +3,5 @@
 """Cache - temporary before database introduction"""
 
 FIRST_START = True
+
+CHROMECAST = dict()

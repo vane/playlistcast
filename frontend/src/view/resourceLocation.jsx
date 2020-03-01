@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { resourceLocationAdd, resourceLocationDel, resourceLocationEdit } from '../service/resourceLocation';
+import { resourceLocationAdd, resourceLocationDel, resourceLocationChange } from '../service/resourceLocation';
 import resourceLocationStore from '../store/resourceLocationStore';
 
 const ResourceLocationComponent = () => (
@@ -58,7 +58,7 @@ const ResourceLocationRow = (data) => {
   };
 
   const handleSave = () => {
-    resourceLocationEdit(resourceLocationStore, { name, location, protocol }, d.id);
+    resourceLocationChange(resourceLocationStore, { name, location, protocol }, d.id);
     setEditing(false);
   };
 

@@ -14,6 +14,6 @@ class Mutation(graphene.ObjectType):
 
     postFirstStart = firststart.Post.Field()
 
-    postResourceLocation = resource_location.Post.Field()
-    putResourceLocation = resource_location.Put.Field()
-    delResourceLocation = resource_location.Delete.Field()
+    resourceLocationAdd = resource_location.Add.Field()
+    resourceLocationChange = resource_location.Change.Field()
+    resourceLocationDelete = resource_location.Delete.Field()

@@ -20,7 +20,7 @@ MAN:\"ssdp:discover\"\r
 LOG = logging.getLogger('playlistcast.protocol.ssdp')
 
 
-def find_upnp_services() -> Dict[Tuple, HttpStream]:
+async def find_upnp_services() -> Dict[Tuple, HttpStream]:
     """ Find all upnp services around"""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     s.settimeout(2)

@@ -4,7 +4,17 @@
 import graphene
 from .service import UPNPService
 
+class CastStatus(graphene.ObjectType):
+    """Chromecast CastStatus"""
+    app_id = graphene.String()
+    display_name = graphene.String()
+    icon_url = graphene.String()
+    is_active_input = graphene.Boolean()
+    is_stand_by = graphene.Boolean()
+    status_text = graphene.String()
+
 class MediaStatus(graphene.ObjectType):
+    """Chromecast MediaStatus"""
     adjusted_current_time = graphene.Int()
     album_artist = graphene.String()
     album_name = graphene.String()
@@ -46,6 +56,7 @@ class MediaStatus(graphene.ObjectType):
     volume_muted = graphene.Boolean()
 
 class MediaController(graphene.ObjectType):
+    """Chromecast MediaController"""
     app_id = graphene.String()
     is_active = graphene.Boolean()
     is_idle = graphene.Boolean()
@@ -55,6 +66,7 @@ class MediaController(graphene.ObjectType):
     status = graphene.Field(MediaStatus)
 
 class ChromecastDevice(graphene.ObjectType):
+    """Chromecast Device"""
     name = graphene.String()
     uuid = graphene.String()
     is_idle = graphene.Boolean()

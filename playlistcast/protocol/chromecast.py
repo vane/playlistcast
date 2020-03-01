@@ -8,7 +8,7 @@ from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
 from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus
-from playlistcast import util
+from playlistcast import util, cache
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
 DEBUG = False
@@ -121,30 +121,47 @@ class DummyChromeast:
         #LOG.debug(status)
         pass
 
+class Device:
+    def __init__(self, device, data):
+        self.device = device
+        self.data = data
+        self.device.media_controller.register_status_listener(self)
 
-def list_devices() -> List[ChromecastDevice]:
+    @classmethod
+    async def new_media_status(cls, status):
+        """Subscribe for chromecast status messages"""
+        print(cls.data.name, cls.data.uuid, status)
+
+async def list_devices() -> List[ChromecastDevice]:
+    """Detect and return chromecast devices"""
     chromecasts = pychromecast.get_chromecasts()
     output = []
     for pych in chromecasts:
-        pych.wait(timeout=30)
-        ch = ChromecastDevice()
-        for attr in ch.__dict__:
-            if attr == 'media_controller':
-                continue
-            value = getattr(pych, attr)
-            setattr(ch, attr, value)
-        pych.media_controller.block_until_active(timeout=30)
-        mc = MediaController()
-        for attr in mc.__dict__:
-            if attr == 'status':
-                continue
-            value = getattr(pych.media_controller, attr)
-            setattr(mc, attr, value)
-        ms = MediaStatus()
-        for attr in ms.__dict__:
-            value = getattr(pych.media_controller.status, attr)
-            setattr(ms, attr, value)
-        mc.status = ms
-        ch.media_controller = mc
-        output.append(ch)
+        if pych.uuid in cache.CHROMECAST:
+            device = cache.CHROMECAST[pych.uuid]
+            output.append(device.data)
+        else:
+            pych.wait(timeout=30)
+            ch = ChromecastDevice()
+            for attr in ch.__dict__:
+                if attr == 'media_controller':
+                    continue
+                value = getattr(pych, attr)
+                setattr(ch, attr, value)
+            pych.media_controller.block_until_active(timeout=30)
+            mc = MediaController()
+            for attr in mc.__dict__:
+                if attr == 'status':
+                    continue
+                value = getattr(pych.media_controller, attr)
+                setattr(mc, attr, value)
+            ms = MediaStatus()
+            for attr in ms.__dict__:
+                value = getattr(pych.media_controller.status, attr)
+                setattr(ms, attr, value)
+            mc.status = ms
+            ch.media_controller = mc
+            output.append(ch)
+            device = Device(pych, ch)
+            cache.CHROMECAST[pych.uuid] = device
     return output

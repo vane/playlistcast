@@ -23,7 +23,7 @@ class ResourceLocationInput(graphene.InputObjectType):
     protocol = graphene.String(required=True)
     auth = ResourceAuthInput(required=False)
 
-class Post(graphene.Mutation):
+class Add(graphene.Mutation):
     """Add ResourceLocation"""
     class Arguments:
         """Add ResourceLocation arguments"""
@@ -39,7 +39,7 @@ class Post(graphene.Mutation):
         SubscriptionModel.resource_location.on_next(model)
         return model
 
-class Put(graphene.Mutation):
+class Change(graphene.Mutation):
     """Modify ResourceLocation"""
     class Arguments:
         """Modify ResourceLocation arguments"""
@@ -48,7 +48,7 @@ class Put(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info, id, data):
+    def mutate(self, info, id, data): # pylint: disable=W0622
         """Modify ResourceLocation"""
         model_id = from_global_id(id)[1]
         model = ResourceLocation.get_query(info).get(model_id)
@@ -69,7 +69,7 @@ class Delete(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info, id):
+    def mutate(self, info, id): # pylint: disable=W0622
         """Delete ResourceLocation"""
         model_id = from_global_id(id)[1]
         model = ResourceLocation.get_query(info).get(model_id)

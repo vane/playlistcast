@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import client from './client';
 
-const GET = () => gql`
+const ALL = () => gql`
 query {
- allResourceLocation {
+ resourceLocationAll {
     id,
     name,
     location,
@@ -13,15 +13,15 @@ query {
 
 const DELETE = (id) => gql`
 mutation {
-  delResourceLocation(id:"${id}") {
+  resourceLocationDelete(id:"${id}") {
     id
   }
 }
 `;
 
-const POST = () => gql`
+const ADD = () => gql`
 mutation post($data: ResourceLocationInput!) {
-  postResourceLocation(data:$data) {
+  resourceLocationAdd(data:$data) {
     id,
     name,
     location,
@@ -30,9 +30,9 @@ mutation post($data: ResourceLocationInput!) {
 }
 `;
 
-const PUT = () => gql`
+const CHANGE = () => gql`
 mutation put($data: ResourceLocationInput!, $id:ID!) {
-  putResourceLocation(data:$data, id:$id) {
+  putResourceLocationChange(data:$data, id:$id) {
     id,
     name,
     location,
@@ -43,14 +43,14 @@ mutation put($data: ResourceLocationInput!, $id:ID!) {
 
 
 export const resourceLocationAll = (store) => client.query({
-  query: GET(),
+  query: ALL(),
   fetchPolicy: 'network-only',
 }).then((resp) => {
   store.setState({
-    location: resp.data.allResourceLocation,
+    location: resp.data.resourceLocationAll,
   });
   store.refresh();
-  console.log('resourceLocationAll.setState', store.allResourceLocation);
+  console.log('resourceLocationAll.setState', store.resourceLocationAll);
 }).catch((error) => console.error(error));
 
 export const resourceLocationDel = (store, id) => client.mutate({
@@ -61,17 +61,17 @@ export const resourceLocationDel = (store, id) => client.mutate({
 
 export const resourceLocationAdd = (store, data) => client.mutate({
   variables: { data },
-  mutation: POST(),
+  mutation: ADD(),
 }).then(() => {
   resourceLocationAll(store);
 }).catch((error) => console.error(error));
 
-export const resourceLocationEdit = (store, data, id) => client.mutate({
+export const resourceLocationChange = (store, data, id) => client.mutate({
   variables: {
     data,
     id,
   },
-  mutation: PUT(),
+  mutation: CHANGE(),
 }).then(() => {
   resourceLocationAll(store);
 }).catch((error) => console.error(error));
