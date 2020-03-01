@@ -14,5 +14,4 @@ class TimeMessage(graphene.ObjectType):
 class SubscriptionModel:
     """SubscriptionModel"""
     time = Subject()
-    device = Subject()
-    resource_location = Subject()
+    media_status = Subject()

@@ -65,4 +65,6 @@ if __name__ == '__main__':
 
     startup()
 
+    import playlistcast.scheduler # pylint: disable=W0611
+
     tornado.ioloop.IOLoop.current().start()

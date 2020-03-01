@@ -9,6 +9,7 @@ import pychromecast
 import pychromecast.controllers.media as chromecast_media
 from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus, CastStatus
 from playlistcast import util, cache
+from playlistcast.api.subscription import SubscriptionModel
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
 DEBUG = False
@@ -129,6 +130,10 @@ class Device:
 
     def new_media_status(self, status):
         """Subscribe for chromecast status messages"""
+        s = MediaStatus()
+        s.uuid = self.data.uuid
+        util.convert(status, s, ('uuid',))
+        SubscriptionModel.media_status.on_next(s)
         print(self.data.name, self.data.uuid, status)
 
 async def list_devices() -> List[ChromecastDevice]:
