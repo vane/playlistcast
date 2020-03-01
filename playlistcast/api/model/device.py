@@ -77,6 +77,7 @@ class ChromecastDevice(graphene.ObjectType):
     host = graphene.String()
     port = graphene.Int()
     media_controller = graphene.Field(MediaController)
+    status = graphene.Field(CastStatus)
 
 
 class UPNPDevice(graphene.ObjectType):
