@@ -33,3 +33,11 @@ def get_ip() -> str:
     finally:
         s.close()
     return IP
+
+def convert(src, dest, ignore):
+    """Copy object attributes from source(src) to destination(dst) and ignore some of attributes"""
+    for attr in dest.__dict__:
+        if attr in ignore:
+            continue
+        value = getattr(src, attr)
+        setattr(dest, attr, value)

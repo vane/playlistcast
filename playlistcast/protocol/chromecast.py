@@ -7,7 +7,7 @@ from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus
+from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus, CastStatus
 from playlistcast import util, cache
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
@@ -143,25 +143,28 @@ async def list_devices() -> List[ChromecastDevice]:
             output.append(device.data)
         else:
             pych.wait(timeout=30)
+            # pychromecast
             ch = ChromecastDevice()
-            for attr in ch.__dict__:
-                if attr == 'media_controller':
-                    continue
-                value = getattr(pych, attr)
-                setattr(ch, attr, value)
+            util.convert(pych, ch, ('media_controller', 'status'))
+
             pych.media_controller.block_until_active(timeout=30)
+            # pychromecast status
+            if pych.status is not None:
+                s = CastStatus()
+                s.uuid = uid
+                util.convert(pych.status, s, ('media_controller', 'status', 'uuid'))
+                ch.status = s
+
+            # pychromecast media_controller
             mc = MediaController()
             mc.uuid = uid
-            for attr in mc.__dict__:
-                if attr == 'status':
-                    continue
-                value = getattr(pych.media_controller, attr)
-                setattr(mc, attr, value)
+            util.convert(pych.media_controller, mc, ('status', 'uuid'))
+
+            # pychromecast media_controller media_status
             ms = MediaStatus()
             ms.uuid = uid
-            for attr in ms.__dict__:
-                value = getattr(pych.media_controller.status, attr)
-                setattr(ms, attr, value)
+            util.convert(pych.media_controller.status, ms, ('uuid',))
+
             mc.status = ms
             ch.media_controller = mc
             output.append(ch)
