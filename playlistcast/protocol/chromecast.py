@@ -137,6 +137,7 @@ async def list_devices() -> List[ChromecastDevice]:
     chromecasts = pychromecast.get_chromecasts()
     output = []
     for pych in chromecasts:
+        uid = str(pych.uuid)
         if pych.uuid in cache.CHROMECAST:
             device = cache.CHROMECAST[pych.uuid]
             output.append(device.data)
@@ -150,12 +151,14 @@ async def list_devices() -> List[ChromecastDevice]:
                 setattr(ch, attr, value)
             pych.media_controller.block_until_active(timeout=30)
             mc = MediaController()
+            mc.uuid = uid
             for attr in mc.__dict__:
                 if attr == 'status':
                     continue
                 value = getattr(pych.media_controller, attr)
                 setattr(mc, attr, value)
             ms = MediaStatus()
+            ms.uuid = uid
             for attr in ms.__dict__:
                 value = getattr(pych.media_controller.status, attr)
                 setattr(ms, attr, value)
