@@ -128,7 +128,7 @@ class Device:
         self.device.media_controller.register_status_listener(self)
 
     @classmethod
-    async def new_media_status(cls, status):
+    def new_media_status(cls, status):
         """Subscribe for chromecast status messages"""
         print(cls.data.name, cls.data.uuid, status)
 
