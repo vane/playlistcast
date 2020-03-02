@@ -140,10 +140,12 @@ async def list_devices() -> List[ChromecastDevice]:
     """Detect and return chromecast devices"""
     chromecasts = pychromecast.get_chromecasts()
     output = []
+    all_keys = list(cache.CHROMECAST.keys())
     for pych in chromecasts:
         uid = str(pych.uuid)
-        if pych.uuid in cache.CHROMECAST:
-            device = cache.CHROMECAST[pych.uuid]
+        if uid in cache.CHROMECAST:
+            all_keys.remove(uid)
+            device = cache.CHROMECAST[uid]
             output.append(device.data)
         else:
             pych.wait(timeout=30)
@@ -173,5 +175,10 @@ async def list_devices() -> List[ChromecastDevice]:
             ch.media_controller = mc
             output.append(ch)
             device = Device(pych, ch)
-            cache.CHROMECAST[pych.uuid] = device
+            cache.CHROMECAST[uid] = device
+    # REMOVE remaining keys cause those are expired devices
+    # TODO send update to UI
+    if len(all_keys) > 0:
+        for key in all_keys:
+            del cache.CHROMECAST[key]
     return output
