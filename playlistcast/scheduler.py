@@ -10,7 +10,7 @@ from playlistcast import cache
 from .api.subscription import TimeMessage, SubscriptionModel
 
 
-@aiocron.crontab('* * * * * */30', start=True)
+@aiocron.crontab('* * * * * */1', start=True)
 async def time_task():
     """Sends time every 30 seconds"""
     t = datetime.now()
@@ -33,7 +33,7 @@ async def find_chromecast_task():
 
 @aiocron.crontab('* * * * * */10', start=True)
 async def update_chromecast_status():
-    """Update chromecast status every 10 seconds""""
+    """Update chromecast status every 10 seconds"""
     for ch in cache.CHROMECAST.values():
         try:
             ch.device.media_controller.update_status()
