@@ -162,6 +162,7 @@ async def list_devices() -> List[ChromecastDevice]:
             output.append(ch)
             device = model.Device(pych, ch)
             cache.CHROMECAST[uid] = device
+            SubscriptionModel.chromecast.on_next(ch)
     # REMOVE remaining keys cause those are expired devices
     # TODO send update to UI
     if len(all_keys) > 0:

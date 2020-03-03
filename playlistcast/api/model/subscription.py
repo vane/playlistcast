@@ -15,3 +15,4 @@ class SubscriptionModel:
     """SubscriptionModel"""
     time = Subject()
     media_status = Subject()
+    chromecast = Subject()
