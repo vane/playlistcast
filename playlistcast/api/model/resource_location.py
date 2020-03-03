@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Resource location"""
 import graphene
+from graphql.execution.base import ResolveInfo
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql_relay import from_global_id
 from playlistcast import db
@@ -31,7 +32,7 @@ class Add(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info, data):
+    def mutate(self, info: ResolveInfo, data: ResourceLocationInput) -> ResourceLocation:
         """Add ResourceLocation"""
         model = db.ResourceLocation(name=data.name, location=data.location, protocol=data.protocol)
         db.session.add(model)
@@ -48,7 +49,7 @@ class Change(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info, id, data): # pylint: disable=W0622
+    def mutate(self, info: ResolveInfo, id: graphene.ID, data: ResourceLocationInput) -> ResourceLocation: # pylint: disable=W0622
         """Modify ResourceLocation"""
         model_id = from_global_id(id)[1]
         model = ResourceLocation.get_query(info).get(model_id)
@@ -69,7 +70,7 @@ class Delete(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info, id): # pylint: disable=W0622
+    def mutate(self, info: ResolveInfo, id: graphene.ID) -> ResourceLocation: # pylint: disable=W0622
         """Delete ResourceLocation"""
         model_id = from_global_id(id)[1]
         model = ResourceLocation.get_query(info).get(model_id)
