@@ -9,3 +9,11 @@ class ResourcePathError(tornado.web.HTTPError):
     code = 1001
     def __init__(self, message):
         tornado.web.HTTPError.__init__(self, reason=message)
+
+
+class ChromecastUUIDError(tornado.web.HTTPError):
+    """Invalid Chromecast uuid"""
+    code = 1001
+    message = "Chromecast with uuid '{}' not found"
+    def __init__(self, uid):
+        tornado.web.HTTPError.__init__(self, reason=self.message.format(uid))

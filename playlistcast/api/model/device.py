@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""""UPNPDevice model"""
+""""Device model"""
 import graphene
-from .service import UPNPService
+from graphql.execution.base import ResolveInfo
+
 
 class CastStatus(graphene.ObjectType):
     """Chromecast CastStatus"""
@@ -79,13 +80,18 @@ class ChromecastDevice(graphene.ObjectType):
     media_controller = graphene.Field(MediaController)
     status = graphene.Field(CastStatus)
 
+class ChromecastPause(graphene.Mutation):
+    """Delete resource location"""
+    class Arguments:
+        """Delete ResourceLocation arguments"""
+        uid = graphene.String(required=True)
 
-class UPNPDevice(graphene.ObjectType):
-    """UPNPDevice"""
-    id = graphene.ID()
-    deviceType = graphene.String()
-    friendlyName = graphene.String()
-    manufacturer = graphene.String()
-    modelName = graphene.String()
-    UDN = graphene.String()
-    serviceList = graphene.List(UPNPService)
+    Output = graphene.Boolean
+
+    def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
+        """Delete ResourceLocation"""
+        if uid not in cache.CHROMECAST:
+            raise error.ChromecastUUIDError(uid)
+        data = cache.CHROMECAST[uid]
+        data.device.media_controller.pause()
+        return True

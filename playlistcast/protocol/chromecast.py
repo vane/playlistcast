@@ -8,7 +8,7 @@ from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
 from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus, CastStatus
-from playlistcast import util, cache
+from playlistcast import util, cache, model
 from playlistcast.api.subscription import SubscriptionModel
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
@@ -122,23 +122,9 @@ class DummyChromeast:
         #LOG.debug(status)
         pass
 
-class Device:
-    def __init__(self, device, data):
-        self.device = device
-        self.data = data
-        self.device.media_controller.register_status_listener(self)
-
-    def new_media_status(self, status):
-        """Subscribe for chromecast status messages"""
-        s = MediaStatus()
-        s.uuid = self.data.uuid
-        util.convert(status, s, ('uuid',))
-        SubscriptionModel.media_status.on_next(s)
-        print(self.data.name, self.data.uuid, status)
-
 async def list_devices() -> List[ChromecastDevice]:
     """Detect and return chromecast devices"""
-    chromecasts = pychromecast.get_chromecasts()
+    chromecasts = await util.awaitable(pychromecast.get_chromecasts)
     output = []
     all_keys = list(cache.CHROMECAST.keys())
     for pych in chromecasts:
@@ -148,7 +134,7 @@ async def list_devices() -> List[ChromecastDevice]:
             device = cache.CHROMECAST[uid]
             output.append(device.data)
         else:
-            pych.wait(timeout=30)
+            await util.awaitable(pych.wait, timeout=30)
             # pychromecast
             ch = ChromecastDevice()
             util.convert(pych, ch, ('media_controller', 'status'))
@@ -174,7 +160,7 @@ async def list_devices() -> List[ChromecastDevice]:
             mc.status = ms
             ch.media_controller = mc
             output.append(ch)
-            device = Device(pych, ch)
+            device = model.Device(pych, ch)
             cache.CHROMECAST[uid] = device
     # REMOVE remaining keys cause those are expired devices
     # TODO send update to UI

@@ -3,7 +3,7 @@
 """Mutation"""
 import graphene
 from .model import firststart
-from .model import resource_location
+from .model import resource_location, device
 
 
 class Mutation(graphene.ObjectType):
@@ -17,3 +17,5 @@ class Mutation(graphene.ObjectType):
     resourceLocationAdd = resource_location.Add.Field()
     resourceLocationChange = resource_location.Change.Field()
     resourceLocationDelete = resource_location.Delete.Field()
+
+    chromecastPause = device.ChromecastPause.Field()

@@ -3,7 +3,11 @@
 """Utility methods"""
 from string import Template
 from datetime import timedelta
+from concurrent.futures import ThreadPoolExecutor
 import socket
+import asyncio
+
+POOL = ThreadPoolExecutor()
 
 #https://stackoverflow.com/a/8907269
 class TimeDeltaFormatter(Template):
@@ -41,3 +45,9 @@ def convert(src, dest, ignore):
             continue
         value = getattr(src, attr)
         setattr(dest, attr, value)
+
+# https://gist.github.com/phizaz/20c36c6734878c6ec053245a477572ec
+def awaitable(fn, *args, **kwargs):
+    """Turn sync method to async"""
+    future = POOL.submit(fn, *args, **kwargs)
+    return asyncio.wrap_future(future)
