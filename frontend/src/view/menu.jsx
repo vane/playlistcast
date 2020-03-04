@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChromecast } from '@fortawesome/free-brands-svg-icons';
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import menuStore from '../store/menuStore';
-import chromecastDeviceAll from '../service/device';
-import deviceStore from '../store/deviceStore';
+import chromecastDeviceAll from '../service/chromecast';
+import chromecastStore from '../store/chromecastStore';
 import { resourceLocationAll } from '../service/resourceLocation';
 import resourceLocationStore from '../store/resourceLocationStore';
 
@@ -19,7 +19,7 @@ const MenuComponent = () => {
 
   const handleSelect = ({ key }) => {
     if (key === 'chromecast') {
-      chromecastDeviceAll(deviceStore).then(() => {
+      chromecastDeviceAll(chromecastStore).then(() => {
         setMenuIndex(key);
         menuStore.setState({ index: key });
         menuStore.refresh('index');

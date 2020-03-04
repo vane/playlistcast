@@ -4,7 +4,7 @@ import menuStore from '../store/menuStore';
 import TimeComponent from './time';
 import MenuComponent from './menu';
 import ResourceLocationComponent from './resourceLocation';
-import ChromecastDeviceComponent from './device';
+import ChromecastDeviceComponent from './chromecast';
 
 const {
   Content,

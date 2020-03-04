@@ -1,8 +1,8 @@
 import Store from '../state';
 
 /* Firststart */
-const deviceStore = new Store({
+const chromecastStore = new Store({
   chromecast: [],
 });
 
-export default deviceStore;
+export default chromecastStore;
