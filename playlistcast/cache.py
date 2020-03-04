@@ -4,6 +4,4 @@
 from typing import Dict
 from .model import Device
 
-FIRST_START = True
-
 CHROMECAST: Dict[str, Device]  = dict()

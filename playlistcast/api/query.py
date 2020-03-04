@@ -6,7 +6,6 @@ import graphene
 from graphql_relay import from_global_id
 from graphql.execution.base import ResolveInfo
 from playlistcast import cache
-from .model.firststart import FirstStart
 from .model.resource_location import ResourceLocation
 from .model.device import ChromecastDevice
 
@@ -17,27 +16,10 @@ class Query(graphene.ObjectType):
         """API Description"""
         description = 'Query'
 
-    hello = graphene.String()
-    first_start = graphene.Field(FirstStart)
-
     resource_location_all = graphene.List(ResourceLocation)
     resource_location = graphene.Field(ResourceLocation, id=graphene.ID(required=True))
 
     chromecast_device_all = graphene.List(ChromecastDevice)
-
-    def resolve_hello(self, info: ResolveInfo) -> str:
-        """Return World from hello"""
-        return "World"
-
-    def resolve_playlist(self, info: ResolveInfo) -> str:
-        """Return playlist"""
-        return "foo"
-
-    def resolve_first_start(self, info: ResolveInfo) -> FirstStart:
-        """Is starting first time"""
-        fs = FirstStart()
-        fs.value = cache.FIRST_START
-        return fs
 
     def resolve_resource_location_all(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
