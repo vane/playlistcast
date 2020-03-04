@@ -33,8 +33,7 @@ const PlaylistCast = () => {
     setCollapsed(c);
   };
 
-  const handleMenuIndexChange = (value) => {
-    console.log('!!! change', menuStore.index, value);
+  const handleMenuIndexChange = () => {
     setMenuIndex(menuStore.index);
   };
 
