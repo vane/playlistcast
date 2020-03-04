@@ -1,39 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Menu } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChromecast } from '@fortawesome/free-brands-svg-icons';
+import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import menuStore from '../store/menuStore';
 import chromecastDeviceAll from '../service/device';
 import deviceStore from '../store/deviceStore';
 import { resourceLocationAll } from '../service/resourceLocation';
 import resourceLocationStore from '../store/resourceLocationStore';
 
-const container = {
-  display: 'flex',
-  flexDirection: 'column',
+const menuItem = {
+  padding: '0 0 0 20px',
+  fontSize: '1.4em',
 };
 
 const MenuComponent = () => {
-  const handleLocationClick = () => {
-    menuStore.setState({
-      index: 'location',
-    });
-    menuStore.refresh('index');
-    resourceLocationAll(resourceLocationStore);
+  const [menuIndex, setMenuIndex] = useState(menuStore.index);
+
+  const handleSelect = ({ key }) => {
+    if (key === 'chromecast') {
+      chromecastDeviceAll(deviceStore).then(() => {
+        setMenuIndex(key);
+        menuStore.setState({ index: key });
+        menuStore.refresh('index');
+      });
+    } else if (key === 'location') {
+      resourceLocationAll(resourceLocationStore).then(() => {
+        setMenuIndex(key);
+        menuStore.setState({ index: key });
+        menuStore.refresh('index');
+      });
+    }
   };
 
-  const handleDeviceClick = () => {
-    menuStore.setState({
-      index: 'chromecast',
-    });
-    menuStore.refresh('index');
-    chromecastDeviceAll(deviceStore);
-  };
   return (
-    <div>
-      <h1>Menu</h1>
-      <div style={container}>
-        <button type="button" onClick={handleLocationClick}>Location</button>
-        <button type="button" onClick={handleDeviceClick}>Device</button>
-      </div>
-    </div>
+    <Menu
+      theme="dark"
+      mode="inline"
+      defaultSelectedKeys={[menuIndex]}
+      inlineIndent={0}
+      onSelect={handleSelect}
+    >
+      <Menu.Item key="location">
+        <FontAwesomeIcon icon={faFolderOpen} size="2x" />
+        <span style={menuItem}>Location</span>
+      </Menu.Item>
+      <Menu.Item key="chromecast">
+        <FontAwesomeIcon icon={faChromecast} size="2x" />
+        <span style={menuItem}>Chromecast</span>
+      </Menu.Item>
+    </Menu>
   );
 };
 

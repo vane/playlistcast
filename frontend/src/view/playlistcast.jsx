@@ -1,67 +1,67 @@
 import React, { useState } from 'react';
-import TimeComponent from './time';
-import FirstStartComponent from './firstStart';
-import firstStartStore from '../store/firstStartStore';
+import { Layout } from 'antd';
 import menuStore from '../store/menuStore';
-import { firstStartGet } from '../service/firstStart';
+import TimeComponent from './time';
 import MenuComponent from './menu';
 import ResourceLocationComponent from './resourceLocation';
 import ChromecastDeviceComponent from './device';
 
+const {
+  Content,
+  Footer,
+  Sider,
+} = Layout;
 
 /* Styles */
-const container = {
-  display: 'flex',
+const slider = {
+  overflow: 'auto',
+  height: '100vh',
+  position: 'fixed',
+  left: 0,
 };
 
-const content = {
-  paddingLeft: '20px',
+const contentStyle = {
+  margin: '24px 16px 0',
+  overflow: 'initial',
 };
-
-/* Components */
 
 const PlaylistCast = () => {
-  const [firstStart, setFirstStart] = useState(firstStartStore.value);
+  const [collapsed, setCollapsed] = useState(false);
   const [menuIndex, setMenuIndex] = useState(menuStore.index);
 
-  const handleFirstStart = () => {
-    console.log('change');
-    setFirstStart(firstStartStore.value);
+  const handleCollapse = (c) => {
+    setCollapsed(c);
   };
 
-  const handleMenuIndexChange = () => {
-    console.log('handleMenuIndexChange');
+  const handleMenuIndexChange = (value) => {
+    console.log('!!! change', menuStore.index, value);
     setMenuIndex(menuStore.index);
   };
 
-  firstStartStore.setCallback('value', handleFirstStart);
   menuStore.setCallback('index', handleMenuIndexChange);
+
   let component = null;
-  if (firstStart === null) firstStartGet(firstStartStore);
   if (menuIndex === 'location') {
     component = <ResourceLocationComponent />;
   } else if (menuIndex === 'chromecast') {
     component = <ChromecastDeviceComponent />;
   }
-  let startComponent = null;
-  if (firstStart) {
-    startComponent = <FirstStartComponent />;
-  }
+
   return (
-    <div style={container}>
-      <div>
-        {startComponent}
-      </div>
-      <div>
+    <Layout>
+      <Sider collapsible collapsed={collapsed} onCollapse={handleCollapse} style={slider}>
         <MenuComponent />
-      </div>
-      <div style={content}>
-        {component}
-      </div>
-      <div>
-        <TimeComponent />
-      </div>
-    </div>
+      </Sider>
+      <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 200 }}>
+        <Content style={contentStyle}>
+          <div className="site-layout-background">
+            <TimeComponent />
+            {component}
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>vane.pl © 2020</Footer>
+      </Layout>
+    </Layout>
   );
 };
 

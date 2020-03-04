@@ -2,7 +2,7 @@ import Store from '../state';
 
 /* Menu */
 const menuStore = new Store({
-  index: null,
+  index: 'location',
 });
 
 export default menuStore;
