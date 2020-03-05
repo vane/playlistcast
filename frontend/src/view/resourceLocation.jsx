@@ -41,12 +41,11 @@ const ResourceLocationTable = () => {
 };
 
 // item
-const ResourceLocationRow = (data) => {
-  const d = data.data;
+const ResourceLocationRow = ({ data }) => {
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(d.name);
-  const [location, setLocation] = useState(d.location);
-  const [protocol, setProtocol] = useState(d.protocol);
+  const [name, setName] = useState(data.name);
+  const [location, setLocation] = useState(data.location);
+  const [protocol, setProtocol] = useState(data.protocol);
 
   const handleEdit = () => {
     console.log('edit');
@@ -54,18 +53,18 @@ const ResourceLocationRow = (data) => {
   };
 
   const handleDelete = () => {
-    resourceLocationDel(resourceLocationStore, d.id);
+    resourceLocationDel(resourceLocationStore, data.id);
   };
 
   const handleSave = () => {
-    resourceLocationChange(resourceLocationStore, { name, location, protocol }, d.id);
+    resourceLocationChange(resourceLocationStore, { name, location, protocol }, data.id);
     setEditing(false);
   };
 
   const handleCancel = () => {
-    setName(d.name);
-    setLocation(d.location);
-    setProtocol(d.protocol);
+    setName(data.name);
+    setLocation(data.location);
+    setProtocol(data.protocol);
     setEditing(false);
   };
 
