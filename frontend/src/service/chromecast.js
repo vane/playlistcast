@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import client from './client';
+import chromecastStore from '../store/chromecastStore';
 
 const ALL = () => gql`
 query {
@@ -19,9 +20,15 @@ query {
       mediaSessionId,
       status {
         title,
+        contentId,
         contentType,
+        currentTime,
+        duration,
+        lastUpdated,
+        playbackRate,
+        playerState,
         volumeLevel,
-        volumeMuted
+        volumeMuted 
       }
     }
   } 
@@ -49,7 +56,9 @@ export const chromecastMediaStatusSubscribe = () => {
     query: MEDIA_STATUS(),
   }).subscribe({
     next(data) {
-      console.log(data);
+      const ms = data.data.mediaStatus;
+      chromecastStore.mediaStatus[ms.uuid] = ms;
+      chromecastStore.refresh(ms.uuid);
     },
   });
   return s;
