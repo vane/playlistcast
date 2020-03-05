@@ -58,12 +58,12 @@ const ChromecastDevice = ({ device }) => {
 };
 
 const TimeDisplay = ({ device, status }) => {
-  console.log('update', device, status.currentTime);
   const [currentTime, setCurrentTime] = useState(0);
+
   if (timers[device.uuid]) {
-    console.log('clear');
     clearTimeout(timers[device.uuid]);
   }
+
   timers[device.uuid] = setTimeout(() => {
     if (status.currentTime > currentTime) {
       setCurrentTime(status.currentTime + 1);
