@@ -26,5 +26,6 @@ class Device:
         s.uuid = self.data.uuid
         util.convert(status, s, ('uuid',))
         self.ensure_in_loop()
+        self.data.media_controller.status = s
         SubscriptionModel.media_status.on_next(s)
         print(self.data.name, self.data.uuid, status)
