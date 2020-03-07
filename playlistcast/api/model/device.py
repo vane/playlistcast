@@ -3,6 +3,7 @@
 """"Device model"""
 import graphene
 from graphql.execution.base import ResolveInfo
+from playlistcast import cache
 
 
 class CastStatus(graphene.ObjectType):
@@ -94,4 +95,20 @@ class ChromecastPause(graphene.Mutation):
             raise error.ChromecastUUIDError(uid)
         data = cache.CHROMECAST[uid]
         data.device.media_controller.pause()
+        return True
+
+class ChromecastPlay(graphene.Mutation):
+    """Delete resource location"""
+    class Arguments:
+        """Delete ResourceLocation arguments"""
+        uid = graphene.String(required=True)
+
+    Output = graphene.Boolean
+
+    def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
+        """Delete ResourceLocation"""
+        if uid not in cache.CHROMECAST:
+            raise error.ChromecastUUIDError(uid)
+        data = cache.CHROMECAST[uid]
+        data.device.media_controller.play()
         return True

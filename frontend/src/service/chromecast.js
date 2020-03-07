@@ -34,6 +34,18 @@ query {
   } 
 }`;
 
+const PAUSE = (uid) => gql`
+mutation {
+  chromecastPause(uid:"${uid}")
+}
+`;
+
+const PLAY = (uid) => gql`
+mutation {
+  chromecastPlay(uid:"${uid}")
+}
+`;
+
 const MEDIA_STATUS = () => gql`
 subscription {
   mediaStatus {
@@ -74,3 +86,11 @@ export const chromecastDeviceAll = (store) => client.query({
   store.refresh('chromecast');
   console.log('chromecastDeviceAll.setState', store.chromecast);
 }).catch((error) => console.error(error));
+
+export const chromecastPause = (uid) => client.mutate({
+  mutation: PAUSE(uid),
+});
+
+export const chromecastPlay = (uid) => client.mutate({
+  mutation: PLAY(uid),
+});

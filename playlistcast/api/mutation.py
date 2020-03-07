@@ -16,3 +16,4 @@ class Mutation(graphene.ObjectType):
     resourceLocationDelete = resource_location.Delete.Field()
 
     chromecastPause = device.ChromecastPause.Field()
+    chromecastPlay = device.ChromecastPlay.Field()

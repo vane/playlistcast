@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Application models"""
-from .api.model.device import MediaStatus
+from .api.model import device
 from .api.model.subscription import SubscriptionModel
 from playlistcast import util
 import asyncio
@@ -22,7 +22,7 @@ class Device:
 
     def new_media_status(self, status):
         """Subscribe for chromecast status messages"""
-        s = MediaStatus()
+        s = device.MediaStatus()
         s.uuid = self.data.uuid
         util.convert(status, s, ('uuid',))
         self.ensure_in_loop()

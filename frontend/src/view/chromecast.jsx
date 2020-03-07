@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
 import chromecastStore from '../store/chromecastStore';
 import TimeDisplay from './timeDisplay';
+import { chromecastPause, chromecastPlay } from '../service/chromecast';
 
 
 const ChromecastDeviceComponent = () => {
@@ -35,14 +38,42 @@ const ChromecastDevice = ({ device }) => {
     setStatus(chromecastStore.mediaStatus[device.uuid]);
   };
 
+  const handlePauseClick = () => {
+    console.log('handlePauseClick');
+    chromecastPause(device.uuid);
+  };
+
+  const handlePlayClick = () => {
+    console.log('handlePlayClick');
+    chromecastPlay(device.uuid);
+  };
+
   chromecastStore.setCallback(device.uuid, handleStatusChange);
 
-  if (mc.isPlaying) {
+  if (status.playerState === 'PLAYING') {
     const name = status.contentId.substring(status.contentId.lastIndexOf('/') + 1);
     component = (
       <div>
         <p>{name}</p>
-        <TimeDisplay currentTime={status.currentTime} duration={status.duration} />
+        <TimeDisplay
+          currentTime={status.currentTime}
+          duration={status.duration}
+          playerState={status.playerState}
+        />
+        <Button type="link" icon={<FontAwesomeIcon icon={faPauseCircle} onClick={handlePauseClick} size="2x" />} />
+      </div>
+    );
+  } else if (status.playerState === 'PAUSED') {
+    const name = status.contentId.substring(status.contentId.lastIndexOf('/') + 1);
+    component = (
+      <div>
+        <p>{name}</p>
+        <TimeDisplay
+          currentTime={status.currentTime}
+          duration={status.duration}
+          playerState={status.playerState}
+        />
+        <Button type="link" icon={<FontAwesomeIcon icon={faPlayCircle} onClick={handlePlayClick} size="2x" />} />
       </div>
     );
   }
