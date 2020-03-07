@@ -3,4 +3,4 @@
 """Cache - temporary before database introduction"""
 from typing import Dict, Any
 
-CHROMECAST: Dict[str, Any]  = dict()
+CHROMECAST: Dict[str, Any] = dict()

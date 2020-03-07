@@ -4,7 +4,7 @@
 import graphene
 from graphql.execution.base import ResolveInfo
 from .model.subscription import TimeMessage, SubscriptionModel
-from .model.chromecast import MediaStatus,ChromecastModel
+from .model.chromecast import MediaStatus, ChromecastModel
 
 class Subscription(graphene.ObjectType):
     """Subscription"""

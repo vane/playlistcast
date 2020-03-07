@@ -128,7 +128,10 @@ class ChromecastVolumeChange(graphene.Mutation):
 
     Output = graphene.Boolean
 
-    def mutate(self, info: ResolveInfo, uid: graphene.String, volume: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
+    def mutate(self,
+               info: ResolveInfo,
+               uid: graphene.String,
+               volume: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
         """Method to volume change uid and volume float value"""
         if uid not in cache.CHROMECAST:
             raise error.ChromecastUUIDError(uid=uid)
@@ -147,6 +150,7 @@ class ChromecastDevice:
         self.device.media_controller.register_status_listener(self)
 
     def ensure_in_loop(self):
+        """Tries to get asyncio loop and creates one if not exists"""
         try:
             asyncio.get_event_loop()
         except RuntimeError:

@@ -49,7 +49,10 @@ class Change(graphene.Mutation):
 
     Output = ResourceLocation
 
-    def mutate(self, info: ResolveInfo, id: graphene.ID, data: ResourceLocationInput) -> ResourceLocation: # pylint: disable=W0622
+    def mutate(self,
+               info: ResolveInfo,
+               id: graphene.ID,  # pylint: disable=W0622
+               data: ResourceLocationInput) -> ResourceLocation:
         """Modify ResourceLocation"""
         model_id = from_global_id(id)[1]
         model = ResourceLocation.get_query(info).get(model_id)

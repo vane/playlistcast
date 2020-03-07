@@ -13,6 +13,7 @@ class TimeMessage(graphene.ObjectType):
 
 class SubscriptionModel:
     """SubscriptionModel"""
-    time = Subject()
-    media_status = Subject()
     chromecast = Subject()
+    media_status = Subject()
+    resource_location = Subject()
+    time = Subject()
