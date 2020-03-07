@@ -155,7 +155,7 @@ class ChromecastDevice:
 
     def new_media_status(self, status: media.MediaStatus):
         """Subscribe for chromecast status messages"""
-        s = chromecast.MediaStatus()
+        s = MediaStatus()
         s.uuid = self.data.uuid
         util.convert(status, s, ('uuid',))
         self.ensure_in_loop()
