@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card } from 'antd';
+import { Button, Card, Slider } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
 import chromecastStore from '../store/chromecastStore';
 import TimeDisplay from './timeDisplay';
-import { chromecastPause, chromecastPlay } from '../service/chromecast';
+import { chromecastPause, chromecastPlay, chromecastVolumeChange } from '../service/chromecast';
 
+
+const VolumeComponent = ({ uid, volumeLevel }) => {
+  let id = null;
+  const handleVolumeChange = (value) => {
+    if (id) clearTimeout(id);
+    id = setTimeout(() => {
+      chromecastVolumeChange(uid, value * 0.01);
+    }, 10);
+  };
+  return (
+    <Slider defaultValue={volumeLevel * 100} onChange={handleVolumeChange} />
+  );
+};
 
 const ChromecastDeviceComponent = () => {
   const [chromecastList, setChromecastList] = useState(chromecastStore.chromecast);
@@ -30,6 +43,7 @@ const ChromecastDeviceComponent = () => {
 
 const ChromecastDevice = ({ device }) => {
   const mc = device.mediaController;
+  const castStatus = device.status;
   const [status, setStatus] = useState(mc.status);
 
   useEffect(() => {
@@ -41,17 +55,15 @@ const ChromecastDevice = ({ device }) => {
   });
 
   const handlePauseClick = () => {
-    console.log('handlePauseClick');
     chromecastPause(device.uuid);
   };
 
   const handlePlayClick = () => {
-    console.log('handlePlayClick');
     chromecastPlay(device.uuid);
   };
 
   let component = null;
-
+  console.log(castStatus);
   if (status.playerState === 'PLAYING') {
     const name = status.contentId.substring(status.contentId.lastIndexOf('/') + 1);
     component = (
@@ -62,6 +74,7 @@ const ChromecastDevice = ({ device }) => {
           duration={status.duration}
           playerState={status.playerState}
         />
+        <VolumeComponent uid={device.uuid} volumeLevel={castStatus.volumeLevel} />
         <Button type="link" icon={<FontAwesomeIcon icon={faPauseCircle} onClick={handlePauseClick} size="2x" />} />
       </div>
     );
@@ -75,6 +88,7 @@ const ChromecastDevice = ({ device }) => {
           duration={status.duration}
           playerState={status.playerState}
         />
+        <VolumeComponent uid={device.uuid} volumeLevel={castStatus.volumeLevel} />
         <Button type="link" icon={<FontAwesomeIcon icon={faPlayCircle} onClick={handlePlayClick} size="2x" />} />
       </div>
     );

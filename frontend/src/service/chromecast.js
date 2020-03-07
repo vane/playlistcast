@@ -11,6 +11,10 @@ query {
     uri,
     host,
     port,
+    status {
+      volumeLevel,
+      volumeMuted
+    },
     mediaController {
       appId,
       isActive,
@@ -26,9 +30,7 @@ query {
         duration,
         lastUpdated,
         playbackRate,
-        playerState,
-        volumeLevel,
-        volumeMuted 
+        playerState
       }
     }
   } 
@@ -43,6 +45,12 @@ mutation {
 const PLAY = (uid) => gql`
 mutation {
   chromecastPlay(uid:"${uid}")
+}
+`;
+
+const VOLUME_CHANGE = (uid, volume) => gql`
+mutation {
+  chromecastVolumeChange(uid:"${uid}", volume:${volume})
 }
 `;
 
@@ -93,4 +101,8 @@ export const chromecastPause = (uid) => client.mutate({
 
 export const chromecastPlay = (uid) => client.mutate({
   mutation: PLAY(uid),
+});
+
+export const chromecastVolumeChange = (uid, volume) => client.mutate({
+  mutation: VOLUME_CHANGE(uid, volume),
 });
