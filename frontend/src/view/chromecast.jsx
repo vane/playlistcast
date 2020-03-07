@@ -13,7 +13,7 @@ const VolumeComponent = ({ uid, volumeLevel }) => {
     if (id) clearTimeout(id);
     id = setTimeout(() => {
       chromecastVolumeChange(uid, value * 0.01);
-    }, 10);
+    }, 500);
   };
   return (
     <Slider defaultValue={volumeLevel * 100} onChange={handleVolumeChange} />
