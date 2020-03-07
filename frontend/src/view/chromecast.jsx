@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
 import { Card } from 'antd';
 import chromecastStore from '../store/chromecastStore';
+import TimeDisplay from './timeDisplay';
 
-momentDurationFormatSetup(moment);
-
-const timers = {};
 
 const ChromecastDeviceComponent = () => {
   const [chromecastList, setChromecastList] = useState(chromecastStore.chromecast);
@@ -46,7 +42,7 @@ const ChromecastDevice = ({ device }) => {
     component = (
       <div>
         <p>{name}</p>
-        <TimeDisplay device={device} status={status} />
+        <TimeDisplay currentTime={status.currentTime} duration={status.duration} />
       </div>
     );
   }
@@ -54,32 +50,6 @@ const ChromecastDevice = ({ device }) => {
     <Card title={device.name}>
       {component}
     </Card>
-  );
-};
-
-const TimeDisplay = ({ device, status }) => {
-  const [currentTime, setCurrentTime] = useState(0);
-
-  if (timers[device.uuid]) {
-    clearTimeout(timers[device.uuid]);
-  }
-
-  timers[device.uuid] = setTimeout(() => {
-    if (status.currentTime > currentTime) {
-      setCurrentTime(status.currentTime + 1);
-    } else {
-      setCurrentTime(currentTime + 1);
-    }
-  }, 1000);
-
-  const current = moment.duration(currentTime, 'seconds').format('hh:mm:ss');
-  const duration = moment.duration(status.duration, 'seconds').format('hh:mm:ss');
-  return (
-    <p>
-      <span>{current}</span>
-      <span>/</span>
-      <span>{duration}</span>
-    </p>
   );
 };
 
