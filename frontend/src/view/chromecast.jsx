@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
@@ -32,11 +32,13 @@ const ChromecastDevice = ({ device }) => {
   const mc = device.mediaController;
   const [status, setStatus] = useState(mc.status);
 
-  let component = null;
-
-  const handleStatusChange = () => {
-    setStatus(chromecastStore.mediaStatus[device.uuid]);
-  };
+  useEffect(() => {
+    const handleStatusChange = () => {
+      setStatus(chromecastStore.mediaStatus[device.uuid]);
+    };
+    chromecastStore.setCallback(device.uuid, handleStatusChange);
+    return () => chromecastStore.delCallback(device.uuid);
+  });
 
   const handlePauseClick = () => {
     console.log('handlePauseClick');
@@ -48,7 +50,7 @@ const ChromecastDevice = ({ device }) => {
     chromecastPlay(device.uuid);
   };
 
-  chromecastStore.setCallback(device.uuid, handleStatusChange);
+  let component = null;
 
   if (status.playerState === 'PLAYING') {
     const name = status.contentId.substring(status.contentId.lastIndexOf('/') + 1);
