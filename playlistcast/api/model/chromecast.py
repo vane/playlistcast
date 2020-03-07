@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """"Device model"""
+import asyncio
 import graphene
+import pychromecast
+from pychromecast.controllers import media
 from graphql.execution.base import ResolveInfo
-from playlistcast import cache
+from playlistcast import cache, error, util
+from .subscription import SubscriptionModel
 
 
 class CastStatus(graphene.ObjectType):
@@ -15,6 +19,8 @@ class CastStatus(graphene.ObjectType):
     is_active_input = graphene.Boolean()
     is_stand_by = graphene.Boolean()
     status_text = graphene.String()
+    volume_level = graphene.Float()
+    volume_muted = graphene.Boolean()
 
 class MediaStatus(graphene.ObjectType):
     """Chromecast MediaStatus"""
@@ -70,7 +76,7 @@ class MediaController(graphene.ObjectType):
     media_session_id = graphene.Int()
     status = graphene.Field(MediaStatus)
 
-class ChromecastDevice(graphene.ObjectType):
+class ChromecastModel(graphene.ObjectType):
     """Chromecast Device"""
     name = graphene.String()
     uuid = graphene.String()
@@ -82,15 +88,15 @@ class ChromecastDevice(graphene.ObjectType):
     status = graphene.Field(CastStatus)
 
 class ChromecastPause(graphene.Mutation):
-    """Delete resource location"""
+    """Pause chromecast device"""
     class Arguments:
-        """Delete ResourceLocation arguments"""
+        """Pause chromecast uid"""
         uid = graphene.String(required=True)
 
     Output = graphene.Boolean
 
     def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
-        """Delete ResourceLocation"""
+        """Method to pause chromecast"""
         if uid not in cache.CHROMECAST:
             raise error.ChromecastUUIDError(uid)
         data = cache.CHROMECAST[uid]
@@ -98,17 +104,61 @@ class ChromecastPause(graphene.Mutation):
         return True
 
 class ChromecastPlay(graphene.Mutation):
-    """Delete resource location"""
+    """Play chromecast device"""
     class Arguments:
-        """Delete ResourceLocation arguments"""
+        """Play chromecast uid"""
         uid = graphene.String(required=True)
 
     Output = graphene.Boolean
 
     def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
-        """Delete ResourceLocation"""
+        """Method to play chromecast"""
         if uid not in cache.CHROMECAST:
             raise error.ChromecastUUIDError(uid)
         data = cache.CHROMECAST[uid]
         data.device.media_controller.play()
         return True
+
+class ChromecastVolumeChange(graphene.Mutation):
+    """Chromecast volume change"""
+    class Arguments:
+        """Chromecast volume change uid and volume float value"""
+        uid = graphene.String(required=True)
+        volume = graphene.Float(required=True)
+
+    Output = graphene.Boolean
+
+    def mutate(self, info: ResolveInfo, uid: graphene.String, volume: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
+        """Method to volume change uid and volume float value"""
+        if uid not in cache.CHROMECAST:
+            raise error.ChromecastUUIDError(uid=uid)
+        data = cache.CHROMECAST[uid]
+        if volume > 1:
+            raise error.ChromecastVolumeError(volume=volume)
+        data.device.set_volume(volume)
+        return True
+
+
+class ChromecastDevice:
+    """Device with api and interface data"""
+    def __init__(self, device: pychromecast.Chromecast, data: ChromecastModel):
+        self.device = device
+        self.data = data
+        self.device.media_controller.register_status_listener(self)
+
+    def ensure_in_loop(self):
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+    def new_media_status(self, status: media.MediaStatus):
+        """Subscribe for chromecast status messages"""
+        s = chromecast.MediaStatus()
+        s.uuid = self.data.uuid
+        util.convert(status, s, ('uuid',))
+        self.ensure_in_loop()
+        self.data.media_controller.status = s
+        SubscriptionModel.media_status.on_next(s)
+        print(self.data.name, self.data.uuid, status)

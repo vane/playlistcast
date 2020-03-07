@@ -7,8 +7,8 @@ from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-from playlistcast.api.model.device import ChromecastDevice, MediaController, MediaStatus, CastStatus
-from playlistcast import util, cache, model
+from playlistcast.api.model.chromecast import ChromecastDevice, MediaController, MediaStatus, CastStatus, ChromecastModel
+from playlistcast import util, cache
 from playlistcast.api.subscription import SubscriptionModel
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
@@ -122,7 +122,7 @@ class DummyChromeast:
         #LOG.debug(status)
         pass
 
-async def list_devices() -> List[ChromecastDevice]:
+async def list_devices() -> List[ChromecastModel]:
     """Detect and return chromecast devices"""
     chromecasts = await util.awaitable(pychromecast.get_chromecasts)
     output = []
@@ -136,7 +136,7 @@ async def list_devices() -> List[ChromecastDevice]:
         else:
             await util.awaitable(pych.wait, timeout=30)
             # pychromecast
-            ch = ChromecastDevice()
+            ch = ChromecastModel()
             util.convert(pych, ch, ('media_controller', 'status'))
 
             pych.media_controller.block_until_active(timeout=30)
@@ -160,7 +160,7 @@ async def list_devices() -> List[ChromecastDevice]:
             mc.status = ms
             ch.media_controller = mc
             output.append(ch)
-            device = model.Device(pych, ch)
+            device = ChromecastDevice(pych, ch)
             cache.CHROMECAST[uid] = device
             SubscriptionModel.chromecast.on_next(ch)
     # REMOVE remaining keys cause those are expired devices

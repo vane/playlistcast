@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Mutation"""
 import graphene
-from .model import resource_location, device
+from .model import resource_location, chromecast
 
 
 class Mutation(graphene.ObjectType):
@@ -15,5 +15,6 @@ class Mutation(graphene.ObjectType):
     resourceLocationChange = resource_location.Change.Field()
     resourceLocationDelete = resource_location.Delete.Field()
 
-    chromecastPause = device.ChromecastPause.Field()
-    chromecastPlay = device.ChromecastPlay.Field()
+    chromecastPause = chromecast.ChromecastPause.Field()
+    chromecastPlay = chromecast.ChromecastPlay.Field()
+    chromecastVolumeChange = chromecast.ChromecastVolumeChange.Field()

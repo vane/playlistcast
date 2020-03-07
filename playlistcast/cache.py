@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Cache - temporary before database introduction"""
-from typing import Dict
-from playlistcast import model
+from typing import Dict, Any
 
-CHROMECAST: Dict[str, model.Device]  = dict()
+CHROMECAST: Dict[str, Any]  = dict()

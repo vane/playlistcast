@@ -4,7 +4,7 @@
 import graphene
 from graphql.execution.base import ResolveInfo
 from .model.subscription import TimeMessage, SubscriptionModel
-from .model.device import MediaStatus,ChromecastDevice
+from .model.chromecast import MediaStatus,ChromecastModel
 
 class Subscription(graphene.ObjectType):
     """Subscription"""
@@ -14,7 +14,7 @@ class Subscription(graphene.ObjectType):
 
     time = graphene.Field(TimeMessage)
     media_status = graphene.Field(MediaStatus)
-    chromecast = graphene.Field(ChromecastDevice)
+    chromecast = graphene.Field(ChromecastModel)
 
     def resolve_time(self, info: ResolveInfo) -> TimeMessage:
         """Time subscription"""
@@ -24,6 +24,6 @@ class Subscription(graphene.ObjectType):
         """MediaStatus subscription"""
         return SubscriptionModel.media_status
 
-    def resolve_chromecast(self, info: ResolveInfo) -> ChromecastDevice:
-        """ChromecastDevice subscription"""
+    def resolve_chromecast(self, info: ResolveInfo) -> ChromecastModel:
+        """ChromecastModel subscription"""
         return SubscriptionModel.chromecast
