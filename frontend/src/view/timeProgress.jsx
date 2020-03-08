@@ -15,7 +15,7 @@ const TimeProgressComponent = ({
   if (playerState === 'PLAYING') {
     useEffect(() => {
       const timer = setTimeout(() => {
-        let current = time + 1;
+        let current = Math.min(time + 1, duration);
         if (Math.abs(current - currentTime) > 10) {
           current = Math.round(currentTime);
         }

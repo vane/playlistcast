@@ -11,7 +11,7 @@ const TimeDisplay = ({ currentTime, duration, playerState }) => {
   if (playerState === 'PLAYING') {
     useEffect(() => {
       const timer = setTimeout(() => {
-        let current = timeData[2] + 1;
+        let current = Math.min(timeData[2] + 1, duration);
         if (Math.abs(current - currentTime) > 10) {
           current = Math.round(currentTime);
         }
