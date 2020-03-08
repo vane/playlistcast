@@ -7,7 +7,7 @@ import chromecastStore from 'store/chromecastStore';
 import { chromecastPause, chromecastPlay } from 'service/chromecast';
 import TimeDisplay from 'view/player/timeDisplay';
 import VolumeComponent from 'view/player/volume';
-import TimeProgressComponent from 'view/player/timeProgress';
+import TimeProgress from 'view/player/timeProgress';
 
 const ChromecastDeviceComponent = () => {
   const [chromecastList, setChromecastList] = useState(chromecastStore.chromecast);
@@ -74,16 +74,11 @@ const ChromecastDevice = ({ device }) => {
     }
     component = (
       <div>
-        <TimeDisplay
-          currentTime={status.currentTime}
-          duration={status.duration}
-          playerState={status.playerState}
-        />
-        <TimeProgressComponent
+        <TimeDisplay currentTime={status.currentTime} duration={status.duration} />
+        <TimeProgress
           uid={device.uuid}
           currentTime={status.currentTime}
           duration={status.duration}
-          playerState={status.playerState}
         />
         <div>
           <Button

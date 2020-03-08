@@ -4,29 +4,19 @@ import { chromecastSeek } from 'service/chromecast';
 import movieTimeFormat from 'formatter/movieTimeFormat';
 
 
-const TimeProgressComponent = ({
-  uid,
-  currentTime,
-  duration,
-  playerState,
-}) => {
+const TimeProgress = ({ uid, currentTime, duration }) => {
   const [time, setTime] = useState(Math.floor(currentTime));
 
-  if (playerState === 'PLAYING') {
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        let current = Math.min(time + 1, duration);
-        if (Math.abs(current - currentTime) > 10) {
-          current = Math.round(currentTime);
-        }
-        setTime(current);
-      }, 1000);
-      return () => clearTimeout(timer);
-    });
-  } else {
-    useEffect(() => {
-    });
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      let current = Math.min(time + 1, Math.floor(duration));
+      if (Math.abs(current - currentTime) > 10) {
+        current = Math.round(currentTime);
+      }
+      setTime(current);
+    }, 1000);
+    return () => clearTimeout(timer);
+  });
 
   const handleSeek = (value) => {
     chromecastSeek(uid, value);
@@ -47,4 +37,4 @@ const TimeProgressComponent = ({
   );
 };
 
-export default TimeProgressComponent;
+export default TimeProgress;
