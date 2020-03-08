@@ -18,3 +18,4 @@ class Mutation(graphene.ObjectType):
     chromecastPause = chromecast.ChromecastPause.Field()
     chromecastPlay = chromecast.ChromecastPlay.Field()
     chromecastVolumeChange = chromecast.ChromecastVolumeChange.Field()
+    chromecastSeek = chromecast.ChromecastSeek.Field()

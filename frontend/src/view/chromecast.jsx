@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Slider } from 'antd';
+import { Button, Card } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
 import chromecastStore from '../store/chromecastStore';
+import { chromecastPause, chromecastPlay } from '../service/chromecast';
 import TimeDisplay from './timeDisplay';
-import { chromecastPause, chromecastPlay, chromecastVolumeChange } from '../service/chromecast';
-
-
-const VolumeComponent = ({ uid, volumeLevel }) => {
-  let id = null;
-  const handleVolumeChange = (value) => {
-    if (id) clearTimeout(id);
-    id = setTimeout(() => {
-      chromecastVolumeChange(uid, value * 0.01);
-    }, 500);
-  };
-
-  useEffect(() => () => clearTimeout(id));
-
-  return (
-    <Slider defaultValue={volumeLevel * 100} onChange={handleVolumeChange} />
-  );
-};
+import VolumeComponent from './volume';
+import TimeProgressComponent from './timeProgress';
 
 const ChromecastDeviceComponent = () => {
   const [chromecastList, setChromecastList] = useState(chromecastStore.chromecast);
@@ -77,6 +62,12 @@ const ChromecastDevice = ({ device }) => {
           duration={status.duration}
           playerState={status.playerState}
         />
+        <TimeProgressComponent
+          uid={device.uuid}
+          currentTime={status.currentTime}
+          duration={status.duration}
+          playerState={status.playerState}
+        />
         <VolumeComponent uid={device.uuid} volumeLevel={castStatus.volumeLevel} />
         <Button type="link" icon={<FontAwesomeIcon icon={faPauseCircle} onClick={handlePauseClick} size="2x" />} />
       </div>
@@ -87,6 +78,12 @@ const ChromecastDevice = ({ device }) => {
       <div>
         <p>{name}</p>
         <TimeDisplay
+          currentTime={status.currentTime}
+          duration={status.duration}
+          playerState={status.playerState}
+        />
+        <TimeProgressComponent
+          uid={device.uuid}
           currentTime={status.currentTime}
           duration={status.duration}
           playerState={status.playerState}

@@ -54,6 +54,12 @@ mutation {
 }
 `;
 
+const SEEK = (uid, value) => gql`
+mutation {
+  chromecastSeek(uid:"${uid}", value:${value})
+}
+`;
+
 const MEDIA_STATUS = () => gql`
 subscription {
   mediaStatus {
@@ -105,4 +111,8 @@ export const chromecastPlay = (uid) => client.mutate({
 
 export const chromecastVolumeChange = (uid, volume) => client.mutate({
   mutation: VOLUME_CHANGE(uid, volume),
+});
+
+export const chromecastSeek = (uid, value) => client.mutate({
+  mutation: SEEK(uid, value),
 });

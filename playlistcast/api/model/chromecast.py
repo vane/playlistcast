@@ -141,6 +141,26 @@ class ChromecastVolumeChange(graphene.Mutation):
         data.device.set_volume(volume)
         return True
 
+class ChromecastSeek(graphene.Mutation):
+    """Chromecast volume change"""
+    class Arguments:
+        """Chromecast volume change uid and volume float value"""
+        uid = graphene.String(required=True)
+        value = graphene.Float(required=True)
+
+    Output = graphene.Boolean
+
+    def mutate(self,
+               info: ResolveInfo,
+               uid: graphene.String,
+               value: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
+        """Method to volume change uid and volume float value"""
+        if uid not in cache.CHROMECAST:
+            raise error.ChromecastUUIDError(uid=uid)
+        data = cache.CHROMECAST[uid]
+        data.device.media_controller.seek(value)
+        return True
+
 
 class ChromecastDevice:
     """Device with api and interface data"""

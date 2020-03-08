@@ -11,7 +11,10 @@ const TimeDisplay = ({ currentTime, duration, playerState }) => {
   if (playerState === 'PLAYING') {
     useEffect(() => {
       const timer = setTimeout(() => {
-        const current = timeData[2] + 1;
+        let current = timeData[2] + 1;
+        if (Math.abs(current - currentTime) > 10) {
+          current = Math.round(currentTime);
+        }
         setTimeData([
           movieTimeFormat(current),
           movieTimeFormat(Math.round(duration)),
