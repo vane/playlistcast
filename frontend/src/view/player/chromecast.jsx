@@ -74,11 +74,16 @@ const ChromecastDevice = ({ device }) => {
     }
     component = (
       <div>
-        <TimeDisplay currentTime={status.currentTime} duration={status.duration} />
+        <TimeDisplay
+          currentTime={status.currentTime}
+          duration={status.duration}
+          playerState={status.playerState}
+        />
         <TimeProgress
           uid={device.uuid}
           currentTime={status.currentTime}
           duration={status.duration}
+          playerState={status.playerState}
         />
         <div>
           <Button
