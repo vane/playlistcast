@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import client from './client';
-import chromecastStore from '../store/chromecastStore';
+import client from 'service/client';
+import chromecastStore from 'store/chromecastStore';
 
 const ALL = () => gql`
 query {

@@ -2,6 +2,18 @@
   "presets": ["@babel/preset-react"],
   "plugins": [
     ["@babel/plugin-proposal-class-properties"],
-    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+    ["import", {
+      "libraryName": "antd",
+      "libraryDirectory": "es",
+      "style": "css",
+    }],
+    ["module-resolver", {
+      "alias": {
+        "view": "./src/view",
+        "service": "./src/service",
+        "store": "./src/store",
+        "formatter": "./src/formatter",
+      }
+    }]
   ]
 }

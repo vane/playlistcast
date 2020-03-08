@@ -1,4 +1,4 @@
-import Store from '../state';
+import Store from 'store/state';
 
 /* Time */
 const timeStore = new Store({

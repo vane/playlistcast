@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
-import timeStore from '../store/timeStore';
+import timeStore from 'store/timeStore';
 
 const timeStyle = {
   position: 'absolute',

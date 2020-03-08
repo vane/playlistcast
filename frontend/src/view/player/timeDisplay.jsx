@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import movieTimeFormat from '../../formatter/movieTimeFormat';
+import movieTimeFormat from 'formatter/movieTimeFormat';
 
 const TimeDisplay = ({ currentTime, duration, playerState }) => {
   const [timeData, setTimeData] = useState([

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { resourceLocationAdd, resourceLocationDel, resourceLocationChange } from '../service/resourceLocation';
-import resourceLocationStore from '../store/resourceLocationStore';
+import { resourceLocationAdd, resourceLocationDel, resourceLocationChange } from 'service/resourceLocation';
+import resourceLocationStore from 'store/resourceLocationStore';
 
 const ResourceLocationComponent = () => (
   <div>

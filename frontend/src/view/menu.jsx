@@ -3,11 +3,11 @@ import { Menu } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChromecast } from '@fortawesome/free-brands-svg-icons';
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import menuStore from '../store/menuStore';
-import { chromecastDeviceAll } from '../service/chromecast';
-import chromecastStore from '../store/chromecastStore';
-import { resourceLocationAll } from '../service/resourceLocation';
-import resourceLocationStore from '../store/resourceLocationStore';
+import menuStore from 'store/menuStore';
+import { chromecastDeviceAll } from 'service/chromecast';
+import chromecastStore from 'store/chromecastStore';
+import { resourceLocationAll } from 'service/resourceLocation';
+import resourceLocationStore from 'store/resourceLocationStore';
 
 const menuItem = {
   padding: '0 0 0 20px',

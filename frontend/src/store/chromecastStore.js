@@ -1,4 +1,4 @@
-import Store from '../state';
+import Store from 'store/state';
 
 /* Firststart */
 const chromecastStore = new Store({

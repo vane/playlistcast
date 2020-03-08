@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import client from './client';
-import timeStore from '../store/timeStore';
+import client from 'service/client';
+import timeStore from 'store/timeStore';
 
 
 const SUBSCRIBE = () => gql`

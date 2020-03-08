@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Layout } from 'antd';
-import menuStore from '../store/menuStore';
-import TimeComponent from './time';
-import MenuComponent from './menu';
-import ResourceLocationComponent from './resourceLocation';
-import ChromecastDeviceComponent from './player/chromecast';
+import menuStore from 'store/menuStore';
+import TimeComponent from 'view/time';
+import MenuComponent from 'view/menu';
+import ResourceLocationComponent from 'view/resourceLocation';
+import ChromecastDeviceComponent from 'view/player/chromecast';
 
 const {
   Content,

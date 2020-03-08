@@ -1,4 +1,4 @@
-import Store from '../state';
+import Store from 'store/state';
 
 /* Menu */
 const menuStore = new Store({

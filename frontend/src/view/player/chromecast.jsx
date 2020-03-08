@@ -3,11 +3,11 @@ import { Button, Card } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
-import chromecastStore from '../../store/chromecastStore';
-import { chromecastPause, chromecastPlay } from '../../service/chromecast';
-import TimeDisplay from './timeDisplay';
-import VolumeComponent from './volume';
-import TimeProgressComponent from './timeProgress';
+import chromecastStore from 'store/chromecastStore';
+import { chromecastPause, chromecastPlay } from 'service/chromecast';
+import TimeDisplay from 'view/player/timeDisplay';
+import VolumeComponent from 'view/player/volume';
+import TimeProgressComponent from 'view/player/timeProgress';
 
 const ChromecastDeviceComponent = () => {
   const [chromecastList, setChromecastList] = useState(chromecastStore.chromecast);
