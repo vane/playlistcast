@@ -23,6 +23,9 @@ const TimeProgressComponent = ({
       }, 1000);
       return () => clearTimeout(timer);
     });
+  } else {
+    useEffect(() => {
+    });
   }
 
   const handleSeek = (value) => {

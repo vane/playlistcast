@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Slider } from 'antd';
+import { Col, Slider } from 'antd';
 import { chromecastVolumeChange } from '../service/chromecast';
 
 const VolumeComponent = ({ uid, volumeLevel }) => {
@@ -14,7 +14,9 @@ const VolumeComponent = ({ uid, volumeLevel }) => {
   useEffect(() => () => clearTimeout(id));
 
   return (
-    <Slider defaultValue={volumeLevel * 100} onChange={handleVolumeChange} />
+    <Col span={4}>
+      <Slider defaultValue={volumeLevel * 100} onChange={handleVolumeChange} />
+    </Col>
   );
 };
 
