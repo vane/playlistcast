@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Col, Slider } from 'antd';
-import { chromecastVolumeChange } from '../service/chromecast';
+import { chromecastVolumeChange } from '../../service/chromecast';
 
 const VolumeComponent = ({ uid, volumeLevel }) => {
   let id = null;

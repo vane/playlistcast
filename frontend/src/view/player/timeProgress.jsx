@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Slider } from 'antd';
-import { chromecastSeek } from '../service/chromecast';
-import movieTimeFormat from '../formatter/movieTimeFormat';
+import { chromecastSeek } from '../../service/chromecast';
+import movieTimeFormat from '../../formatter/movieTimeFormat';
 
 
 const TimeProgressComponent = ({
