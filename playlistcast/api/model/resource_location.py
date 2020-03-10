@@ -8,6 +8,18 @@ from graphql_relay import from_global_id
 from playlistcast import db
 from .subscription import SubscriptionModel
 
+class File(graphene.ObjectType):
+    name = graphene.String()
+    size = graphene.String()
+    suffix = graphene.String()
+    is_dir = graphene.Boolean()
+
+class Directory(graphene.ObjectType):
+    resource_name = graphene.String()
+    resource_path = graphene.String()
+    subpath = graphene.String()
+    files = graphene.List(File)
+
 class ResourceAuth(SQLAlchemyObjectType):
     """ResourceAuth"""
     class Meta:
