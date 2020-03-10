@@ -17,6 +17,6 @@ frontend/node_modules
 *.iml
 
 # temp
-test/
+test_poc/
 dummy_play.py
 *.sqlite3
