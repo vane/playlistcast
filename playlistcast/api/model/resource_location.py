@@ -6,9 +6,19 @@ from graphql.execution.base import ResolveInfo
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql_relay import from_global_id
 from playlistcast import db
-from .resource import ResourceAuthInput
 from .subscription import SubscriptionModel
 
+class ResourceAuth(SQLAlchemyObjectType):
+    """ResourceAuth"""
+    class Meta:
+        """Describes ResourceAuth"""
+        model = db.ResourceAuth
+        interfaces = (db.Node, )
+
+class ResourceAuthInput(graphene.InputObjectType):
+    """ResourceAuthInput"""
+    username = graphene.String(required=True)
+    password = graphene.String(required=True)
 
 class ResourceLocation(SQLAlchemyObjectType):
     """ResourceLocation"""
