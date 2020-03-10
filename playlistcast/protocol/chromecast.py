@@ -7,8 +7,8 @@ from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-from playlistcast.api.model.chromecast import ChromecastDevice, MediaController, MediaStatus, CastStatus, ChromecastModel
-from playlistcast import util, cache
+from playlistcast.api.model.chromecast import ChromecastDevice, MediaController, MediaStatus, CastStatus, ChromecastModel, CHROMECAST
+from playlistcast import util
 from playlistcast.api.subscription import SubscriptionModel
 
 LOG = logging.getLogger('playlistcast.protocol.chromecast')
@@ -126,12 +126,12 @@ async def list_devices() -> List[ChromecastModel]:
     """Detect and return chromecast devices"""
     chromecasts = await util.awaitable(pychromecast.get_chromecasts)
     output = []
-    all_keys = list(cache.CHROMECAST.keys())
+    all_keys = list(CHROMECAST.keys())
     for pych in chromecasts:
         uid = str(pych.uuid)
-        if uid in cache.CHROMECAST:
+        if uid in CHROMECAST:
             all_keys.remove(uid)
-            device = cache.CHROMECAST[uid]
+            device = CHROMECAST[uid]
             output.append(device.data)
         else:
             await util.awaitable(pych.wait, timeout=30)
@@ -161,11 +161,11 @@ async def list_devices() -> List[ChromecastModel]:
             ch.media_controller = mc
             output.append(ch)
             device = ChromecastDevice(pych, ch)
-            cache.CHROMECAST[uid] = device
+            CHROMECAST[uid] = device
             SubscriptionModel.chromecast.on_next(ch)
     # REMOVE remaining keys cause those are expired devices
     # TODO send update to UI
     if len(all_keys) > 0:
         for key in all_keys:
-            del cache.CHROMECAST[key]
+            del CHROMECAST[key]
     return output

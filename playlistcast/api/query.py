@@ -5,9 +5,9 @@ from typing import List
 import graphene
 from graphql_relay import from_global_id
 from graphql.execution.base import ResolveInfo
-from playlistcast import cache, util
+from playlistcast import util
 from .model.resource_location import ResourceLocation
-from .model.chromecast import ChromecastModel, CastStatus
+from .model.chromecast import ChromecastModel, CastStatus, CHROMECAST
 
 
 class Query(graphene.ObjectType):
@@ -33,7 +33,7 @@ class Query(graphene.ObjectType):
     def resolve_chromecast_device_all(self, info: ResolveInfo) -> List[ChromecastModel]:
         """List all chromecast models"""
         output = []
-        for val in cache.CHROMECAST.values():
+        for val in CHROMECAST.values():
             # update model
             cs = CastStatus()
             cs.uuid = val.data.uuid

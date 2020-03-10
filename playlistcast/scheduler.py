@@ -6,8 +6,8 @@ from datetime import datetime
 import aiocron
 from pychromecast.error import UnsupportedNamespace
 from playlistcast.protocol import ssdp, chromecast
-from playlistcast import cache
 from .api.subscription import TimeMessage, SubscriptionModel
+from .api.model.chromecast import CHROMECAST
 
 
 @aiocron.crontab('* * * * * */1', start=True)
@@ -16,7 +16,7 @@ async def time_task():
     t = datetime.now()
     msg = TimeMessage(id=str(t.timestamp()), time=t)
     SubscriptionModel.time.on_next(msg)
-    print("test_task run : ", t)
+    # print("test_task run : ", t)
 
 
 @aiocron.crontab('*/5 * * * *', start=True)
@@ -34,7 +34,7 @@ async def find_chromecast_task():
 @aiocron.crontab('* * * * * */10', start=True)
 async def update_chromecast_status():
     """Update chromecast status every 10 seconds"""
-    for ch in cache.CHROMECAST.values():
+    for ch in CHROMECAST.values():
         try:
             ch.device.media_controller.update_status()
         except UnsupportedNamespace:

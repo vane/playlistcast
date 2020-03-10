@@ -4,11 +4,11 @@
 import asyncio
 import graphene
 import pychromecast
+from typing import Dict
 from pychromecast.controllers import media
 from graphql.execution.base import ResolveInfo
-from playlistcast import cache, error, util
+from playlistcast import error, util
 from .subscription import SubscriptionModel
-
 
 class CastStatus(graphene.ObjectType):
     """Chromecast CastStatus"""
@@ -87,6 +87,8 @@ class ChromecastModel(graphene.ObjectType):
     media_controller = graphene.Field(MediaController)
     status = graphene.Field(CastStatus)
 
+# MUTATIONS
+
 class ChromecastPause(graphene.Mutation):
     """Pause chromecast device"""
     class Arguments:
@@ -97,9 +99,9 @@ class ChromecastPause(graphene.Mutation):
 
     def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
         """Method to pause chromecast"""
-        if uid not in cache.CHROMECAST:
+        if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid)
-        data = cache.CHROMECAST[uid]
+        data = CHROMECAST[uid]
         data.device.media_controller.pause()
         return True
 
@@ -113,9 +115,9 @@ class ChromecastPlay(graphene.Mutation):
 
     def mutate(self, info: ResolveInfo, uid: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
         """Method to play chromecast"""
-        if uid not in cache.CHROMECAST:
+        if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid)
-        data = cache.CHROMECAST[uid]
+        data = CHROMECAST[uid]
         data.device.media_controller.play()
         return True
 
@@ -133,9 +135,9 @@ class ChromecastVolumeChange(graphene.Mutation):
                uid: graphene.String,
                volume: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
         """Method to volume change uid and volume float value"""
-        if uid not in cache.CHROMECAST:
+        if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid=uid)
-        data = cache.CHROMECAST[uid]
+        data = CHROMECAST[uid]
         if volume > 1:
             raise error.ChromecastVolumeError(volume=volume)
         data.device.set_volume(volume)
@@ -155,12 +157,13 @@ class ChromecastSeek(graphene.Mutation):
                uid: graphene.String,
                value: graphene.Float) -> graphene.Boolean: # pylint: disable=W0622
         """Method to volume change uid and volume float value"""
-        if uid not in cache.CHROMECAST:
+        if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid=uid)
-        data = cache.CHROMECAST[uid]
+        data = CHROMECAST[uid]
         data.device.media_controller.seek(value)
         return True
 
+# HELPER CLASSES
 
 class ChromecastDevice:
     """Device with api and interface data"""
@@ -186,3 +189,5 @@ class ChromecastDevice:
         self.data.media_controller.status = s
         SubscriptionModel.media_status.on_next(s)
         print(self.data.name, self.data.uuid, status)
+
+CHROMECAST: Dict[str, ChromecastDevice] = dict()
