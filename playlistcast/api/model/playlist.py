@@ -6,6 +6,11 @@ from graphql.execution.base import ResolveInfo
 from .chromecast import CHROMECAST, ChromecastDevice
 from playlistcast.protocol import m3u
 
+class PlaylistItem(graphene.ObjectType):
+    index = graphene.Int()
+    name = graphene.String()
+    path = graphene.String()
+
 class PlaylistPlay(graphene.Mutation):
     """Play playlist on chromecast device"""
     class Arguments:

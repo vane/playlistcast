@@ -8,8 +8,10 @@ import graphene
 from graphql_relay import from_global_id
 from graphql.execution.base import ResolveInfo
 from playlistcast import util, db
+from playlistcast.protocol import m3u
 from .model.resource_location import ResourceLocation, Directory, File
 from .model.chromecast import ChromecastModel, CastStatus, CHROMECAST
+from .model.playlist import PlaylistItem
 
 
 class Query(graphene.ObjectType):
@@ -24,6 +26,8 @@ class Query(graphene.ObjectType):
     list_directory = graphene.Field(Directory, name=graphene.String(required=True), subpath=graphene.String())
 
     chromecast_device_all = graphene.List(ChromecastModel)
+
+    playlist_items = graphene.List(PlaylistItem)
 
     def resolve_resource_location_all(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
@@ -67,3 +71,13 @@ class Query(graphene.ObjectType):
             val.data.status = cs
             output.append(val.data)
         return output
+
+    def resolve_playlist_items(self, info: ResolveInfo, playlist_path: graphene.String) -> List[PlaylistItem]:
+        playlist = m3u.M3UPlaylist()
+        playlist.load(playlist_path)
+        output = list()
+        for idx, pitem in enumerate(playlist.items):
+            item = PlaylistItem(index=idx, name=pitem.name, path=pitem.path)
+            output.append(item)
+        return output
+
