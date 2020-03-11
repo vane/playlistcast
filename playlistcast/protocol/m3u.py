@@ -94,6 +94,12 @@ class M3UPlaylist:
         return self._items
 
     @property
+    def current_item(self) -> PlaylistItem:
+        item = self.items[self._index.current]
+        return item
+
+
+    @property
     def index(self) -> PlayIndex:
         """Get play index"""
         return self._index

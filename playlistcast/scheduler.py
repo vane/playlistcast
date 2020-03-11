@@ -8,6 +8,7 @@ from pychromecast.error import UnsupportedNamespace
 from playlistcast.protocol import ssdp, chromecast
 from .api.subscription import TimeMessage, SubscriptionModel
 from .api.model.chromecast import CHROMECAST
+from .api.model.playlist import PLAYLIST
 
 
 @aiocron.crontab('* * * * * */1', start=True)
@@ -39,3 +40,13 @@ async def update_chromecast_status():
             ch.device.media_controller.update_status()
         except UnsupportedNamespace:
             traceback.format_exc()
+
+@aiocron.crontab('* * * * * */1', start=True)
+async def playlist_check_status_play_next():
+    """Play item from playlist if nothing is playing - check for status every 1 second"""
+    for p in PLAYLIST.values():
+        mc = p.chromecast.device.media_controller
+        if not mc.is_playing or not mc.is_paused:
+            item = p.playlist.next()
+            mc.play_media(item.path)
+            mc.block_until_active(30)
