@@ -27,7 +27,7 @@ class Query(graphene.ObjectType):
 
     chromecast_device_all = graphene.List(ChromecastModel)
 
-    playlist_items = graphene.Field(graphene.List(PlaylistItem), resource_location=graphene.String(required=True), playlist_path=graphene.String(required=True))
+    playlist_items = graphene.Field(graphene.List(PlaylistItem), name=graphene.String(required=True), path=graphene.String(required=True))
 
     def resolve_resource_location_all(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
@@ -72,17 +72,16 @@ class Query(graphene.ObjectType):
             output.append(val.data)
         return output
 
-    def resolve_playlist_items(self, info: ResolveInfo, resource_location: graphene.String, playlist_path:graphene.String) -> List[PlaylistItem]:
-        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == resource_location).first()
+    def resolve_playlist_items(self, info: ResolveInfo, name: graphene.String, path:graphene.String) -> List[PlaylistItem]:
+        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == name).first()
         if not model:
             raise error.ResourcePathError('Invalid path {}'.format(name))
         playlist = m3u.M3UPlaylist()
-        fpath = os.path.join(model.location, playlist_path)
-        playlist.load(fpath)
+        m3udir = playlist.load(model.location, path)
         output = list()
-        for idx, pitem in enumerate(playlist.items):
-            path = 'http://'+util.get_ip()+':'+str(config.PORT)+'/resource/'+resource_location+pitem.path[len(model.location):]
-            item = PlaylistItem(index=idx, name=pitem.name, path=path)
+        for p in playlist.items:
+            urlpath = 'http://'+util.get_ip()+':'+str(config.PORT)+'/resource/'+name+'/'+str(m3udir)+'/'+p.path
+            item = PlaylistItem(index=p.index, name=p.name, path=urlpath)
             output.append(item)
         return output
 
