@@ -4,6 +4,7 @@ import graphene
 from typing import Dict
 from graphql.execution.base import ResolveInfo
 from .chromecast import CHROMECAST, ChromecastDevice
+from playlistcast import db
 from playlistcast.protocol import m3u
 
 class PlaylistItem(graphene.ObjectType):
@@ -11,53 +12,48 @@ class PlaylistItem(graphene.ObjectType):
     name = graphene.String()
     path = graphene.String()
 
+
+class PlaylistPlayOptions(graphene.InputObjectType):
+    """Playlist play options"""
+    uid = graphene.String(required=True)
+    name = graphene.String(required=True)
+    path = graphene.String(required=True)
+    index = graphene.Int()
+
 class PlaylistPlay(graphene.Mutation):
     """Play playlist on chromecast device"""
     class Arguments:
         """Play chromecast uid"""
         uid = graphene.String(required=True)
-        playlist_path = graphene.String(required=True)
+        name = graphene.String(required=True)
 
     Output = graphene.Boolean
 
-    def mutate(self, info: ResolveInfo, uid: graphene.String, playlist_path: graphene.String) -> graphene.Boolean: # pylint: disable=W0622
+    def mutate(self, info: ResolveInfo, options: PlaylistPlayOptions) -> graphene.Boolean: # pylint: disable=W0622
         """Method to play playlist on chromecast"""
-        if uid not in CHROMECAST:
+        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == options.name).first()
+        if not model:
+            raise error.ResourcePathError('Invalid path {}'.format(options.name))
+        if options.uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid)
-        data = CHROMECAST[uid]
-        if data.device.media_controller.is_playing:
-            data.device.media_controller.stop()
-        playlist = m3u.M3UPlaylist()
-        playlist.load(playlist_path)
-        PLAYLIST[uid] = playlist
-        data.device.media_controller.play_media(playlist.current_item.path)
-        return True
-
-class PlaylistPlayIndex(graphene.Mutation):
-    """Play playlist on chromecast device"""
-    class Arguments:
-        """Play chromecast uid"""
-        uid = graphene.String(required=True)
-        playlist_path = graphene.String(required=True)
-        index = graphene.Int(required=True)
-
-    Output = graphene.Boolean
-
-    def mutate(self, info: ResolveInfo, uid: graphene.String, playlist_path: graphene.String, index: graphene.Int) -> graphene.Boolean: # pylint: disable=W0622
-        """Method to play playlist on chromecast"""
-        if uid not in CHROMECAST:
-            raise error.ChromecastUUIDError(uid)
-        data = CHROMECAST[uid]
+        # create new playlist or use existing one
         if PLAYLIST[uid] is not None:
-            playlist = PLAYLIST[uid].playlist
+            playlist = PLAYLIST[uid]
+            p = playlist.playlist
         else:
-            playlist = m3u.M3UPlaylist()
-            playlist.load(playlist_path)
-            PLAYLIST[uid] = Playlist(playlist=playlist, chromecast=data)
-        if data.device.media_controller.is_playing:
-            data.device.media_controller.stop()
-        idx = playlist.index
-        idx.current = index
+            p = m3u.M3UPlaylist()
+            p.load(model.location, options.path)
+            data = CHROMECAST[options.uid]
+            playlist = Playlist(playlist=p, chromecast=data)
+            PLAYLIST[options.uid] = playlist
+        # deal with change status
+        mc = playlist.chromecast.device.media_controller
+        if mc.is_playing:
+            mc.stop()
+        if options.index:
+            p.set_index(options.index)
+        urlpath = 'http://'+util.get_ip()+':'+str(config.PORT)+'/resource/'+options.name+'/'+str(m3udir)+'/'+p.current_item.path
+        playlist.device.media_controller.play_media(p.current_item.path)
         return True
 
 class Playlist:

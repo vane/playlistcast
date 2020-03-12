@@ -21,4 +21,3 @@ class Mutation(graphene.ObjectType):
     chromecast_seek = chromecast.ChromecastSeek.Field()
 
     playlist_play = playlist.PlaylistPlay.Field()
-    playlist_play_index = playlist.PlaylistPlayIndex.Field()
