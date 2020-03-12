@@ -58,29 +58,6 @@ class PlaylistItem:
     def __repr__(self):
         return self.path
 
-class FileLoader:
-    """FileLoader"""
-    @staticmethod
-    def load_disk_file(fpath: str) -> (str, str):
-        """Load file from disk"""
-        # check path
-        path = pathlib.Path(fpath)
-        if not path.exists():
-            raise ValueError('File not exists')
-        basepath = path.parent
-        # open file
-        data = b''
-        with open(fpath, 'rb') as f:
-            data = f.read().decode()
-        return data, basepath
-
-    @staticmethod
-    def load_http_file(fpath: str) -> (str, str):
-        """Load file from http"""
-        resp = requests.get(fpath)
-        basepath = '/'.join(resp.url.split('/')[:-1])
-        return resp.content.decode(), basepath
-
 class M3UPlaylist:
     """M3UPlaylist"""
     def __init__(self, index_default: PlayIndex = None):
@@ -155,7 +132,14 @@ class M3UPlaylist:
         return out
 
     def _load_file(self, fpath: str) -> (str, str):
-        """Load m3u file from various locations"""
-        if fpath.startswith('http'):
-            return FileLoader.load_http_file(fpath)
-        return FileLoader.load_disk_file(fpath)
+        """Load m3u file from disk"""
+        # check path
+        path = pathlib.Path(fpath)
+        if not path.exists():
+            raise ValueError('File not exists')
+        basepath = path.parent
+        # open file
+        data = b''
+        with open(fpath, 'rb') as f:
+            data = f.read().decode()
+        return data, basepath

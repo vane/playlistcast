@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 import socket
 import asyncio
 
-POOL = ThreadPoolExecutor()
+POOL: ThreadPoolExecutor = ThreadPoolExecutor()
 
 #https://stackoverflow.com/a/8907269
 class TimeDeltaFormatter(Template):

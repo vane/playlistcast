@@ -7,7 +7,7 @@ from typing import List
 import graphene
 from graphql_relay import from_global_id
 from graphql.execution.base import ResolveInfo
-from playlistcast import util, db
+from playlistcast import util, db, config
 from playlistcast.protocol import m3u
 from .model.resource_location import ResourceLocation, Directory, File
 from .model.chromecast import ChromecastModel, CastStatus, CHROMECAST
@@ -27,7 +27,7 @@ class Query(graphene.ObjectType):
 
     chromecast_device_all = graphene.List(ChromecastModel)
 
-    playlist_items = graphene.List(PlaylistItem)
+    playlist_items = graphene.Field(graphene.List(PlaylistItem), resource_location=graphene.String(required=True), playlist_path=graphene.String(required=True))
 
     def resolve_resource_location_all(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
@@ -72,12 +72,17 @@ class Query(graphene.ObjectType):
             output.append(val.data)
         return output
 
-    def resolve_playlist_items(self, info: ResolveInfo, playlist_path: graphene.String) -> List[PlaylistItem]:
+    def resolve_playlist_items(self, info: ResolveInfo, resource_location: graphene.String, playlist_path:graphene.String) -> List[PlaylistItem]:
+        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == resource_location).first()
+        if not model:
+            raise error.ResourcePathError('Invalid path {}'.format(name))
         playlist = m3u.M3UPlaylist()
-        playlist.load(playlist_path)
+        fpath = os.path.join(model.location, playlist_path)
+        playlist.load(fpath)
         output = list()
         for idx, pitem in enumerate(playlist.items):
-            item = PlaylistItem(index=idx, name=pitem.name, path=pitem.path)
+            path = 'http://'+util.get_ip()+':'+str(config.PORT)+'/resource/'+resource_location+pitem.path[len(model.location):]
+            item = PlaylistItem(index=idx, name=pitem.name, path=path)
             output.append(item)
         return output
 

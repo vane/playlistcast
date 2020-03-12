@@ -8,6 +8,7 @@ import logging
 import graphene
 import tornado.web
 import tornado.ioloop
+from playlistcast import config
 from playlistcast.protocol import chromecast, ssdp
 from playlistcast.api import Subscription, Query, Mutation
 from playlistcast.api import browse
@@ -43,10 +44,6 @@ def startup():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    # configuration
-    DEBUG = False
-    PORT = 9666
-    HOST = '0.0.0.0'
 
     # server
     SCHEMA = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
@@ -61,7 +58,7 @@ if __name__ == '__main__':
         (r'/resource/(.*)', browse.BrowseResourceHandler),
     ]
     APP = tornado.web.Application(ENDPOINTS)
-    APP.listen(PORT, HOST)
+    APP.listen(config.PORT, config.HOST)
 
     startup()
 
