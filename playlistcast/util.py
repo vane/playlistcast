@@ -38,13 +38,20 @@ def get_ip() -> str:
         s.close()
     return IP
 
-def convert(src, dest, ignore):
+def convert(src, dest, ignore=None):
     """Copy object attributes from source(src) to destination(dst) and ignore some of attributes"""
-    for attr in dest.__dict__:
-        if attr in ignore:
+    out = dest()
+    accessor = getattr
+    if isinstance(src, dict):
+        def get_dict(src, attr):
+            return src.get(attr)
+        accessor = get_dict
+    for attr in out.__dict__:
+        if ignore is not None and attr in ignore:
             continue
-        value = getattr(src, attr)
-        setattr(dest, attr, value)
+        value = accessor    (src, attr)
+        setattr(out, attr, value)
+    return out
 
 # https://gist.github.com/phizaz/20c36c6734878c6ec053245a477572ec
 def awaitable(fn, *args, **kwargs):
