@@ -230,7 +230,7 @@ class ChromecastDevice:
         subtitle_tracks = list()
         for tr in status.subtitle_tracks:
             if 'type' in tr and tr['type'] == 'TEXT':
-                subtitle_track = util.convert(tr, chromecast_model.SubtitleTrack)
+                subtitle_track = util.convert(tr, SubtitleTrack)
                 subtitle_tracks.append(subtitle_track)
         s.subtitle_tracks = subtitle_tracks
         s.uuid = self.data.uuid
