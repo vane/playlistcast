@@ -11,8 +11,9 @@ playlistcast ( work in progress )
 * [x] Video subtitle pick, disable
  
 ### TODO
-* [ ] Browse added resource files
-* [ ] Pick m3u file and play
+* [ ] Browse added resource files ( TODO ui )
+* [ ] Pick m3u file and assign to device ( TODO ui )
+* [ ] Play m3u file with interactive ui 
 * [ ] Display interactive playlist
 * [ ] Ability to display pictures in chromecast
 * [ ] Ability to play audio files in chromecast
@@ -20,6 +21,8 @@ playlistcast ( work in progress )
 * [ ] Create playlists with audio / video / pictures
 * [ ] Play playlists
 * [ ] Play files from directory in order
+* [ ] Play video title
+* [ ] Customize chromecast ui while playing video
 * [ ] Create miniatures of video files using ffmpeg
 * [ ] Check if file is compatible with chromecast
 * [ ] Convert incompatible file types using ffmpeg
