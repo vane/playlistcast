@@ -15,6 +15,7 @@ const TimeProgress = ({
   if (playerState === 'PLAYING') {
     useEffect(() => {
       const timer = setTimeout(() => {
+        // TODO move to one place
         let current = Math.min(time + 1, Math.floor(duration));
         if (Math.abs(current - currentTime) > 10) {
           current = Math.round(currentTime);

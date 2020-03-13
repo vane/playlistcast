@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlayCircle, faPauseCircle } from '@fortawesome/free-regular-svg-icons';
+import { faPlayCircle, faPauseCircle, faClosedCaptioning } from '@fortawesome/free-regular-svg-icons';
 import { faRedo, faUndo, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import chromecastStore from 'store/chromecastStore';
 import { chromecastPause, chromecastPlay, chromecastSeek } from 'service/chromecast';
 import TimeDisplay from 'view/player/timeDisplay';
 import VolumeComponent from 'view/player/volume';
+import CaptionComponent from 'view/player/caption';
 import TimeProgress from 'view/player/timeProgress';
 
 
@@ -36,6 +37,7 @@ const ChromecastDevice = ({ device }) => {
   const castStatus = device.status;
   const [status, setStatus] = useState(mc.status);
   const [volumeVisible, setVolumeVisible] = useState(false);
+  const [captionVisible, setCaptionVisible] = useState(false);
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -54,6 +56,7 @@ const ChromecastDevice = ({ device }) => {
   };
 
   const handleVolumeChange = () => {
+    setCaptionVisible(false);
     setVolumeVisible(!volumeVisible);
   };
   console.log(status.currentTime);
@@ -63,6 +66,11 @@ const ChromecastDevice = ({ device }) => {
 
   const handleSeekBackward = () => {
     chromecastSeek(device.uuid, status.currentTime - 30);
+  };
+
+  const handleCaptionChange = () => {
+    setVolumeVisible(false);
+    setCaptionVisible(!captionVisible);
   };
 
   let playPauseButton = null;
@@ -92,6 +100,15 @@ const ChromecastDevice = ({ device }) => {
     let volumeComponent = null;
     if (volumeVisible) {
       volumeComponent = <VolumeComponent uid={device.uuid} volumeLevel={castStatus.volumeLevel} />;
+    }
+    let captionComponent = null;
+    if (captionVisible) {
+      captionComponent = (
+        <CaptionComponent
+          uid={device.uuid}
+          subtitleTracks={status.subtitleTracks}
+        />
+      );
     }
     component = (
       <div>
@@ -123,8 +140,14 @@ const ChromecastDevice = ({ device }) => {
             style={{ marginRight: '10px' }}
             icon={<FontAwesomeIcon icon={faRedo} onClick={hanleSeekForward} size="2x" />}
           />
+          <Button
+            type="link"
+            style={{ marginRight: '10px' }}
+            icon={<FontAwesomeIcon icon={faClosedCaptioning} onClick={handleCaptionChange} size="2x" />}
+          />
         </div>
         {volumeComponent}
+        {captionComponent}
       </div>
     );
   }

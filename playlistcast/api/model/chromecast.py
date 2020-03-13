@@ -187,7 +187,7 @@ class ChromecastSubtitleEnable(graphene.Mutation):
         if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid=uid)
         data = CHROMECAST[uid]
-        data.device.media_controller.enable_subtitle()
+        data.device.media_controller.enable_subtitle(track_id)
         return True
 
 class ChromecastSubtitleDisable(graphene.Mutation):

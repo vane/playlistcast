@@ -30,7 +30,12 @@ query {
         duration,
         lastUpdated,
         playbackRate,
-        playerState
+        playerState,
+        subtitleTracks {
+          trackId,
+          type,
+          language
+        }
       }
     }
   } 
@@ -72,8 +77,25 @@ subscription {
     playbackRate,
     playerState,
     volumeLevel,
-    volumeMuted   
+    volumeMuted,
+    subtitleTracks {
+      trackId,
+      type,
+      language
+    }   
   }
+}
+`;
+
+const SUBTITLE_ENABLE = (uid, trackId) => gql`
+mutation {
+  chromecastSubtitleEnable(uid:"${uid}", trackId:${trackId})
+}
+`;
+
+const SUBTITLE_DISABLE = (uid) => gql`
+mutation {
+  chromecastSubtitleDisable(uid:"${uid}")
 }
 `;
 
@@ -115,4 +137,12 @@ export const chromecastVolumeChange = (uid, volume) => client.mutate({
 
 export const chromecastSeek = (uid, value) => client.mutate({
   mutation: SEEK(uid, value),
+});
+
+export const chromecastSubtitleEnable = (uid, trackId) => client.mutate({
+  mutation: SUBTITLE_ENABLE(uid, trackId),
+});
+
+export const chromecastSubtitleDisable = (uid) => client.mutate({
+  mutation: SUBTITLE_DISABLE(uid),
 });
