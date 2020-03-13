@@ -10,6 +10,12 @@ from graphql.execution.base import ResolveInfo
 from playlistcast import error, util
 from .subscription import SubscriptionModel
 
+class SubtitleTrack(graphene.ObjectType):
+    """Chromecast MediaStatus SubtitleTrack"""
+    trackId = graphene.Int()
+    type = graphene.String()
+    language = graphene.String()
+
 class CastStatus(graphene.ObjectType):
     """Chromecast CastStatus"""
     uuid = graphene.String()
@@ -52,6 +58,7 @@ class MediaStatus(graphene.ObjectType):
     stream_type = graphene.String()
     stream_type_is_buffered = graphene.Boolean()
     stream_type_is_live = graphene.Boolean()
+    subtitle_tracks = graphene.List(of_type=SubtitleTrack)
     supports_pause = graphene.Boolean()
     supports_queue_next = graphene.Boolean()
     supports_queue_prev = graphene.Boolean()
@@ -163,6 +170,43 @@ class ChromecastSeek(graphene.Mutation):
         data.device.media_controller.seek(value)
         return True
 
+class ChromecastSubtitleEnable(graphene.Mutation):
+    """Chromecast subtitle enable"""
+    class Arguments:
+        """Chromecast subtitle enable uid and track_id int value"""
+        uid = graphene.String(required=True)
+        track_id = graphene.Int(required=True)
+
+    Output = graphene.Boolean
+
+    def mutate(self,
+               info: ResolveInfo,
+               uid: graphene.String,
+               track_id:graphene.Int) -> graphene.Boolean:
+        """Method to change subtitle track"""
+        if uid not in CHROMECAST:
+            raise error.ChromecastUUIDError(uid=uid)
+        data = CHROMECAST[uid]
+        data.device.media_controller.enable_subtitle()
+        return True
+
+class ChromecastSubtitleDisable(graphene.Mutation):
+    """Chromecast subtitle disable"""
+    class Arguments:
+        """Chromecast subtitle disable uid"""
+        uid = graphene.String(required=True)
+
+    Output = graphene.Boolean
+
+    def mutate(self,
+               info: ResolveInfo,
+               uid: graphene.String) -> graphene.Boolean:
+        """Disable subtitles"""
+        if uid not in CHROMECAST:
+            raise error.ChromecastUUIDError(uid=uid)
+        data = CHROMECAST[uid]
+        data.device.media_controller.disable_subtitle()
+        return True
 # HELPER CLASSES
 
 class ChromecastDevice:
@@ -182,9 +226,14 @@ class ChromecastDevice:
 
     def new_media_status(self, status: media.MediaStatus):
         """Subscribe for chromecast status messages"""
-        s = MediaStatus()
+        s = util.convert(status, MediaStatus, ('uuid','subtitle_tracks'))
+        subtitle_tracks = list()
+        for tr in status.subtitle_tracks:
+            if 'type' in tr and tr['type'] == 'TEXT':
+                subtitle_track = util.convert(tr, chromecast_model.SubtitleTrack)
+                subtitle_tracks.append(subtitle_track)
+        s.subtitle_tracks = subtitle_tracks
         s.uuid = self.data.uuid
-        util.convert(status, s, ('uuid',))
         self.ensure_in_loop()
         self.data.media_controller.status = s
         SubscriptionModel.media_status.on_next(s)

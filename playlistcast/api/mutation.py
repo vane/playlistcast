@@ -19,5 +19,7 @@ class Mutation(graphene.ObjectType):
     chromecast_play = chromecast.ChromecastPlay.Field()
     chromecast_volume_change = chromecast.ChromecastVolumeChange.Field()
     chromecast_seek = chromecast.ChromecastSeek.Field()
+    chromecast_subtitle_enable = chromecast.ChromecastSubtitleEnable.Field()
+    chromecast_subtitle_disable = chromecast.ChromecastSubtitleDisable.Field()
 
     playlist_play = playlist.PlaylistPlay.Field()

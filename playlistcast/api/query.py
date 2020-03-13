@@ -65,9 +65,8 @@ class Query(graphene.ObjectType):
         output = []
         for val in CHROMECAST.values():
             # update model
-            cs = CastStatus()
+            cs = util.convert(val.device.status, CastStatus, ('media_controller', 'status', 'uuid'))
             cs.uuid = val.data.uuid
-            util.convert(val.device.status, cs, ('media_controller', 'status', 'uuid'))
             val.data.status = cs
             output.append(val.data)
         return output

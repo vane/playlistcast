@@ -7,7 +7,7 @@ from typing import List
 from datetime import timedelta
 import pychromecast
 import pychromecast.controllers.media as chromecast_media
-from playlistcast.api.model.chromecast import ChromecastDevice, MediaController, MediaStatus, CastStatus, ChromecastModel, CHROMECAST
+import playlistcast.api.model.chromecast as chromecast_model
 from playlistcast import util
 from playlistcast.api.subscription import SubscriptionModel
 
@@ -122,50 +122,53 @@ class DummyChromeast:
         #LOG.debug(status)
         pass
 
-async def list_devices() -> List[ChromecastModel]:
+async def list_devices() -> List[chromecast_model.ChromecastModel]:
     """Detect and return chromecast devices"""
     chromecasts = await util.awaitable(pychromecast.get_chromecasts)
     output = []
-    all_keys = list(CHROMECAST.keys())
+    all_keys = list(chromecast_model.CHROMECAST.keys())
     for pych in chromecasts:
         uid = str(pych.uuid)
-        if uid in CHROMECAST:
+        if uid in chromecast_model.CHROMECAST:
             all_keys.remove(uid)
-            device = CHROMECAST[uid]
+            device = chromecast_model.CHROMECAST[uid]
             output.append(device.data)
         else:
             await util.awaitable(pych.wait, timeout=30)
             # pychromecast
-            ch = ChromecastModel()
-            util.convert(pych, ch, ('media_controller', 'status'))
+            ch = util.convert(pych, chromecast_model.ChromecastModel, ('media_controller', 'status'))
 
             pych.media_controller.block_until_active(timeout=30)
             # pychromecast status
             if pych.status is not None:
-                s = CastStatus()
+                s = util.convert(pych.status, chromecast_model.CastStatus, ('media_controller', 'status', 'uuid'))
                 s.uuid = uid
-                util.convert(pych.status, s, ('media_controller', 'status', 'uuid'))
                 ch.status = s
 
             # pychromecast media_controller
-            mc = MediaController()
+            mc = util.convert(pych.media_controller, chromecast_model.MediaController, ('status', 'uuid'))
             mc.uuid = uid
-            util.convert(pych.media_controller, mc, ('status', 'uuid'))
-
             # pychromecast media_controller media_status
-            ms = MediaStatus()
+            st = pych.media_controller.status
+            ms = util.convert(st, chromecast_model.MediaStatus, ('uuid','subtitle_tracks'))
             ms.uuid = uid
-            util.convert(pych.media_controller.status, ms, ('uuid',))
+            # media_status subtitles
+            subtitle_tracks = list()
+            for tr in st.subtitle_tracks:
+                if 'type' in tr and tr['type'] == 'TEXT':
+                    subtitle_track = util.convert(tr, chromecast_model.SubtitleTrack)
+                    subtitle_tracks.append(subtitle_track)
+            ms.subtitle_tracks = subtitle_tracks
 
             mc.status = ms
             ch.media_controller = mc
             output.append(ch)
-            device = ChromecastDevice(pych, ch)
-            CHROMECAST[uid] = device
+            device = chromecast_model.ChromecastDevice(pych, ch)
+            chromecast_model.CHROMECAST[uid] = device
             SubscriptionModel.chromecast.on_next(ch)
     # REMOVE remaining keys cause those are expired devices
     # TODO send update to UI
     if len(all_keys) > 0:
         for key in all_keys:
-            del CHROMECAST[key]
+            del chromecast_model.CHROMECAST[key]
     return output
