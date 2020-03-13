@@ -14,11 +14,14 @@ playlistcast ( work in progress )
 * [ ] Video audio pick disable
 * [ ] Video quality pick disable
 * [ ] Display stream icon if available
-* [ ] Test with pupular streaming services  
-    * [ ]  Amazon Prime ( partialy working ) 
-    * [ ]  cda.pl ( TODO ) 
-    * [ ]  HBO ( TODO ) 
-    * [ ]  Netflix ( partialy working ) 
+* [ ] Test with pupular streaming services      
+    * [ ]  Amazon Prime  
+        * [ ] check for playlist support 
+    * [ ]  cda.pl 
+    * [ ]  HBO 
+    * [ ]  Netflix
+        * [ ] check for playlist support
+    * [ ]  Youtube 
 * [ ] Browse added resource files ( TODO ui )
 * [ ] Pick m3u file and assign to device ( TODO ui )
 * [ ] Play m3u file with interactive ui 
