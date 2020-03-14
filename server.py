@@ -24,6 +24,56 @@ from tornadoql.tornadoql import GraphQLSubscriptionHandler, GraphQLHandler, Grap
 
 STATIC_PATH = os.path.abspath('frontend/build')
 LOG = logging.getLogger('playlistcast')
+ALLOWED_HEADERS = ("content-type",)
+
+class GQLSubscriptionHandler(GraphQLSubscriptionHandler):
+    def set_default_headers(self):
+        origin = self.request.headers.get("Origin")
+        method = self.request.headers.get("Access-Control-Request-Method")
+        header = self.request.headers.get("Access-Control-Request-Headers")
+        print(f"RequestHandler {method} - {origin} - {header}")
+        # here can restrict origin - ex for throtling
+        if config.DEBUG and origin:
+            self.set_header("Access-Control-Allow-Origin", origin)
+        if config.DEBUG and method:
+            self.set_header("Access-Control-Allow-Method", method)
+        if header in ALLOWED_HEADERS:
+            self.set_header("Access-Control-Expose-Headers", header)
+            self.set_header("Access-Control-Allow-Headers", header)
+    def check_origin(self, origin):
+        if config.DEBUG:
+            return True
+        return False
+
+class GQLHandler(GraphQLHandler):
+    def set_default_headers(self):
+        origin = self.request.headers.get("Origin")
+        method = self.request.headers.get("Access-Control-Request-Method")
+        header = self.request.headers.get("Access-Control-Request-Headers")
+        print(f"RequestHandler {method} - {origin} - {header}")
+        # here can restrict origin - ex for throtling
+        if config.DEBUG and origin:
+            self.set_header("Access-Control-Allow-Origin", origin)
+        if config.DEBUG and method:
+            self.set_header("Access-Control-Allow-Method", method)
+        if header in ALLOWED_HEADERS:
+            self.set_header("Access-Control-Expose-Headers", header)
+            self.set_header("Access-Control-Allow-Headers", header)
+
+class GiQLHandler(GraphiQLHandler):
+    def set_default_headers(self):
+        origin = self.request.headers.get("Origin")
+        method = self.request.headers.get("Access-Control-Request-Method")
+        header = self.request.headers.get("Access-Control-Request-Headers")
+        print(f"RequestHandler {method} - {origin} - {header}")
+        # here can restrict origin - ex for throtling
+        if config.DEBUG and origin:
+            self.set_header("Access-Control-Allow-Origin", origin)
+        if config.DEBUG and method:
+            self.set_header("Access-Control-Allow-Method", method)
+        if header in ALLOWED_HEADERS:
+            self.set_header("Access-Control-Expose-Headers", header)
+            self.set_header("Access-Control-Allow-Headers", header)
 
 class IndexHandler(tornado.web.RequestHandler):
     """Serve index.html"""
@@ -38,8 +88,8 @@ class ConfigHandler(tornado.web.RequestHandler):
     """Serve config.js"""
     # pylint: disable=W0223
     def get(self):
-        # uri = f'{util.get_ip()}:{config.PORT}'
-        uri = f'localhost:{config.PORT}'
+        uri = f'{util.get_ip()}:{config.PORT}'
+        # uri = f'localhost:{config.PORT}'
         resp = 'window.playlistcast = {};window.playlistcast.uri = "%s";'% uri
         self.finish(resp)
 
@@ -56,12 +106,12 @@ if __name__ == '__main__':
     # server
     SCHEMA = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
     ENDPOINTS = [
-        (r'/subscriptions', GraphQLSubscriptionHandler, dict(opts=dict(sockets=[],
+        (r'/subscriptions', GQLSubscriptionHandler, dict(opts=dict(sockets=[],
                                                                        subscriptions={}),
                                                              schema=SCHEMA)),
         (r'/config.js', ConfigHandler),
-        (r'/graphql', GraphQLHandler, dict(schema=SCHEMA)),
-        (r'/graphiql', GraphiQLHandler),
+        (r'/graphql', GQLHandler, dict(schema=SCHEMA)),
+        (r'/graphiql', GiQLHandler),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': STATIC_PATH}),
         (r'/', IndexHandler),
         (r'/resource/(.*)', browse.BrowseResourceHandler),
