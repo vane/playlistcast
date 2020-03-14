@@ -42,7 +42,7 @@ module.exports = {
   },
   plugins: [
     new Html({
-      template: 'index.html',
+      template: mode === 'production' ? 'index.html' : 'index.debug.html',
     }),
     new Copy([
       {from: 'assets'},
