@@ -8,7 +8,7 @@ import logging
 import graphene
 import tornado.web
 import tornado.ioloop
-from playlistcast import config
+from playlistcast import config, util
 from playlistcast.protocol import chromecast, ssdp
 from playlistcast.api import Subscription, Query, Mutation
 from playlistcast.api import browse
@@ -34,6 +34,14 @@ class IndexHandler(tornado.web.RequestHandler):
         with open(path, 'rb') as file:
             self.finish(file.read())
 
+class ConfigHandler(tornado.web.RequestHandler):
+    """Serve config.js"""
+    # pylint: disable=W0223
+    def get(self):
+        # uri = f'{util.get_ip()}:{config.PORT}'
+        uri = f'localhost:{config.PORT}'
+        resp = 'window.playlistcast = {};window.playlistcast.uri = "%s";'% uri
+        self.finish(resp)
 
 def startup():
     """Run some scheduled tasks on start"""
@@ -51,6 +59,7 @@ if __name__ == '__main__':
         (r'/subscriptions', GraphQLSubscriptionHandler, dict(opts=dict(sockets=[],
                                                                        subscriptions={}),
                                                              schema=SCHEMA)),
+        (r'/config.js', ConfigHandler),
         (r'/graphql', GraphQLHandler, dict(schema=SCHEMA)),
         (r'/graphiql', GraphiQLHandler),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': STATIC_PATH}),

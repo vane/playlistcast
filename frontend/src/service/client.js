@@ -5,9 +5,8 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const uri = 'localhost:9666';
-const httpUri = `http://${uri}/graphql`;
-const wsUri = `ws://${uri}/subscriptions`;
+const httpUri = `http://${window.playlistcast.uri}/graphql`;
+const wsUri = `ws://${window.playlistcast.uri}/subscriptions`;
 
 const link = ApolloLink.split(
   ({ query }) => {
