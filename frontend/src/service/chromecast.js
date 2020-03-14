@@ -35,7 +35,8 @@ query {
         trackList {
           trackId,
           type,
-          language
+          language,
+          name
         }
       }
     }
@@ -82,7 +83,8 @@ subscription {
     subtitleTracks {
       trackId,
       type,
-      language
+      language,
+      name
     }   
   }
 }

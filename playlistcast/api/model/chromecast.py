@@ -14,6 +14,7 @@ class MediaTrack(graphene.ObjectType):
     """Chromecast MediaStatus SubtitleTrack"""
     trackId = graphene.Int()
     type = graphene.String()
+    name = graphene.String()
     language = graphene.String()
 
 class CastStatus(graphene.ObjectType):

@@ -21,7 +21,7 @@ const CaptionComponent = ({ uid, trackList }) => {
           key={track.trackId}
           onClick={() => handleSubtitleChange(track.trackId)}
         >
-          { track.language }
+          { track.name || track.language }
         </Button>
       );
       tracks.push(c);
