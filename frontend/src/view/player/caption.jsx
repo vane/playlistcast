@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { chromecastSubtitleDisable, chromecastSubtitleEnable } from 'service/chromecast';
 
-const CaptionComponent = ({ uid, subtitleTracks }) => {
-  console.log(uid, subtitleTracks);
-  const [subtitles, setSubtitles] = useState(subtitleTracks);
+const CaptionComponent = ({ uid, trackList }) => {
+  console.log(uid, trackList);
+  const [subtitles, setSubtitles] = useState(trackList);
   const handleSubtitleChange = (trackId) => {
     console.log('subtitle', uid, trackId);
     if (trackId < 0) {

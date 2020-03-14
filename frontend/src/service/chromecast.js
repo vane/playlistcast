@@ -32,7 +32,7 @@ query {
         lastUpdated,
         playbackRate,
         playerState,
-        subtitleTracks {
+        trackList {
           trackId,
           type,
           language

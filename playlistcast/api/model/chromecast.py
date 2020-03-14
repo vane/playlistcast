@@ -10,7 +10,7 @@ from graphql.execution.base import ResolveInfo
 from playlistcast import error, util
 from .subscription import SubscriptionModel
 
-class SubtitleTrack(graphene.ObjectType):
+class MediaTrack(graphene.ObjectType):
     """Chromecast MediaStatus SubtitleTrack"""
     trackId = graphene.Int()
     type = graphene.String()
@@ -58,7 +58,7 @@ class MediaStatus(graphene.ObjectType):
     stream_type = graphene.String()
     stream_type_is_buffered = graphene.Boolean()
     stream_type_is_live = graphene.Boolean()
-    subtitle_tracks = graphene.List(of_type=SubtitleTrack)
+    track_list = graphene.List(of_type=MediaTrack)
     supports_pause = graphene.Boolean()
     supports_queue_next = graphene.Boolean()
     supports_queue_prev = graphene.Boolean()
@@ -227,12 +227,11 @@ class ChromecastDevice:
     def new_media_status(self, status: media.MediaStatus):
         """Subscribe for chromecast status messages"""
         s = util.convert(status, MediaStatus, ('uuid', 'subtitle_tracks'))
-        subtitle_tracks = list()
+        media_tracks = list()
         for tr in status.subtitle_tracks:
-            if 'type' in tr and tr['type'] == 'TEXT':
-                subtitle_track = util.convert(tr, SubtitleTrack)
-                subtitle_tracks.append(subtitle_track)
-        s.subtitle_tracks = subtitle_tracks
+            track = util.convert(tr, MediaTrack)
+            media_tracks.append(track)
+        s.track_list = media_tracks
         s.uuid = self.data.uuid
         self.ensure_in_loop()
         self.data.media_controller.status = s

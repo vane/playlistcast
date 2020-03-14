@@ -106,7 +106,7 @@ const ChromecastDevice = ({ device }) => {
       captionComponent = (
         <CaptionComponent
           uid={device.uuid}
-          subtitleTracks={status.subtitleTracks}
+          trackList={status.trackList}
         />
       );
     }

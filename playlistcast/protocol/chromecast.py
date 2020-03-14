@@ -65,15 +65,14 @@ async def list_devices() -> List[chromecast_model.ChromecastModel]:
             mc.uuid = uid
             # pychromecast media_controller media_status
             st = pych.media_controller.status
-            ms = util.convert(st, chromecast_model.MediaStatus, ('uuid', 'subtitle_tracks'))
+            ms = util.convert(st, chromecast_model.MediaStatus, ('uuid', 'track_list'))
             ms.uuid = uid
             # media_status subtitles
-            subtitle_tracks = list()
+            media_tracks = list()
             for tr in st.subtitle_tracks:
-                if 'type' in tr and tr['type'] == 'TEXT':
-                    subtitle_track = util.convert(tr, chromecast_model.SubtitleTrack)
-                    subtitle_tracks.append(subtitle_track)
-            ms.subtitle_tracks = subtitle_tracks
+                track = util.convert(tr, chromecast_model.MediaTrack)
+                media_tracks.append(track)
+            ms.track_list = media_tracks
 
             mc.status = ms
             ch.media_controller = mc
