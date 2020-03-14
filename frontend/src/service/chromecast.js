@@ -13,7 +13,8 @@ query {
     port,
     status {
       volumeLevel,
-      volumeMuted
+      volumeMuted,
+      iconUrl
     },
     mediaController {
       appId,

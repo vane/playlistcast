@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card } from 'antd';
+import { Avatar, Button, Card } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle, faPauseCircle, faClosedCaptioning } from '@fortawesome/free-regular-svg-icons';
 import { faRedo, faUndo, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
@@ -152,7 +152,15 @@ const ChromecastDevice = ({ device }) => {
     );
   }
   return (
-    <Card title={device.name}>
+    <Card title={
+      (
+        <span>
+          <Avatar src={castStatus.iconUrl} />
+          <span style={{ marginLeft: '10px' }}>{device.name}</span>
+        </span>
+      )
+    }
+    >
       <div>
         <p>{name}</p>
         {component}

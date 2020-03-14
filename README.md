@@ -9,9 +9,9 @@ playlistcast ( work in progress )
 * [x] Play / pause / back and forward 30 seconds 
 * [x] Video playback time, duration and seek bar
 * [x] Video subtitle pick, disable
+* [x] Display stream icon if available
  
 ### TODO
-* [ ] Display stream icon if available
 * [ ] Pick m3u file and assign to device ( TODO ui )
 * [ ] Play m3u file with interactive ui 
 * [ ] Display interactive playlist
