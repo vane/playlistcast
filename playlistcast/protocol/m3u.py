@@ -4,14 +4,13 @@
 import os
 import pathlib
 import logging
-from typing import List, Dict, Any
-import requests
+from typing import List
 
 LOG = logging.getLogger('playlistcast.protocol.m3u')
 
 class PlaylistItem:
     """Playlist item"""
-    def __init__(self, index:int, path: str = '', name: str = ''):
+    def __init__(self, index: int, path: str = '', name: str = ''):
         self._index = index
         self._path = path
         self._name = name
@@ -47,6 +46,7 @@ class M3UPlaylist:
 
     @property
     def current_item(self) -> PlaylistItem:
+        """Get playlist current item from list based on index"""
         item = self.items[self._index - 1]
         return item
 
@@ -109,7 +109,7 @@ class M3UPlaylist:
                 i += 1
         return out
 
-    def _load_file(self, location:str, path: str) -> (str, str):
+    def _load_file(self, location: str, path: str) -> (str, str):
         """Load m3u file from disk"""
         # check path
         fpath = os.path.join(location, path)

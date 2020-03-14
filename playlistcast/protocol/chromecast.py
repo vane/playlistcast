@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Chromecast"""
-import time
 import logging
 from typing import List
 from datetime import timedelta
 import pychromecast
-import pychromecast.controllers.media as chromecast_media
+import pychromecast.controllers.media as chromecast_media # pylint: disable=W0611
 import playlistcast.api.model.chromecast as chromecast_model
 from playlistcast import util
 from playlistcast.api.subscription import SubscriptionModel
@@ -66,7 +65,7 @@ async def list_devices() -> List[chromecast_model.ChromecastModel]:
             mc.uuid = uid
             # pychromecast media_controller media_status
             st = pych.media_controller.status
-            ms = util.convert(st, chromecast_model.MediaStatus, ('uuid','subtitle_tracks'))
+            ms = util.convert(st, chromecast_model.MediaStatus, ('uuid', 'subtitle_tracks'))
             ms.uuid = uid
             # media_status subtitles
             subtitle_tracks = list()

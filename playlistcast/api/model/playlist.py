@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import graphene
+"""Playlist api"""
 from typing import Dict
+import graphene
 from graphql.execution.base import ResolveInfo
-from .chromecast import CHROMECAST, ChromecastDevice
-from playlistcast import db
+from playlistcast import db, error
 from playlistcast.protocol import m3u
+from .chromecast import CHROMECAST, ChromecastDevice
 
 class PlaylistItem(graphene.ObjectType):
+    """Single playlist item"""
     index = graphene.Int()
     name = graphene.String()
     path = graphene.String()
@@ -31,14 +33,15 @@ class PlaylistPlay(graphene.Mutation):
 
     def mutate(self, info: ResolveInfo, options: PlaylistPlayOptions) -> graphene.Boolean: # pylint: disable=W0622
         """Method to play playlist on chromecast"""
-        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == options.name).first()
+        model = db.session.query(db.ResourceLocation)\
+            .filter(db.ResourceLocation.name == options.name).first()
         if not model:
             raise error.ResourcePathError('Invalid path {}'.format(options.name))
         if options.uid not in CHROMECAST:
-            raise error.ChromecastUUIDError(uid)
+            raise error.ChromecastUUIDError(options.uid)
         # create new playlist or use existing one
-        if PLAYLIST[uid] is not None:
-            playlist = PLAYLIST[uid]
+        if PLAYLIST[options.uid] is not None:
+            playlist = PLAYLIST[options.uid]
             p = playlist.playlist
         else:
             p = m3u.M3UPlaylist()
@@ -52,11 +55,14 @@ class PlaylistPlay(graphene.Mutation):
             mc.stop()
         if options.index:
             p.set_index(options.index)
-        urlpath = 'http://'+util.get_ip()+':'+str(config.PORT)+'/resource/'+options.name+'/'+str(m3udir)+'/'+p.current_item.path
+        # urlpath = f'http://{util.get_ip()}/{config.PORT}/resource/'
+        # urlpath += f'{options.name}/{m3udir}/{p.current_item.path}'
         playlist.device.media_controller.play_media(p.current_item.path)
         return True
 
+# HELPER
 class Playlist:
+    """Playlist with api and interface data"""
     def __init__(self, playlist: m3u.M3UPlaylist, chromecast: ChromecastDevice):
         self.playlist = playlist
         self.chromecast = chromecast

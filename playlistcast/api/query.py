@@ -7,7 +7,7 @@ from typing import List
 import graphene
 from graphql_relay import from_global_id
 from graphql.execution.base import ResolveInfo
-from playlistcast import util, db, config
+from playlistcast import util, db, config, error
 from playlistcast.protocol import m3u
 from .model.resource_location import ResourceLocation, Directory, File
 from .model.chromecast import ChromecastModel, CastStatus, CHROMECAST
@@ -23,11 +23,19 @@ class Query(graphene.ObjectType):
     resource_location_all = graphene.List(ResourceLocation)
     resource_location = graphene.Field(ResourceLocation, id=graphene.ID(required=True))
 
-    list_directory = graphene.Field(Directory, name=graphene.String(required=True), subpath=graphene.String())
+    list_directory = graphene.Field(
+        Directory,
+        name=graphene.String(required=True),
+        subpath=graphene.String()
+    )
 
     chromecast_device_all = graphene.List(ChromecastModel)
 
-    playlist_items = graphene.Field(graphene.List(PlaylistItem), name=graphene.String(required=True), path=graphene.String(required=True))
+    playlist_items = graphene.Field(
+        graphene.List(PlaylistItem),
+        name=graphene.String(required=True),
+        path=graphene.String(required=True)
+    )
 
     def resolve_resource_location_all(self, info: ResolveInfo) -> List[ResourceLocation]:
         """Return ResourceLocation list"""
@@ -39,6 +47,10 @@ class Query(graphene.ObjectType):
         return ResourceLocation.get_node(info, id)
 
     def resolve_list_directory(self, info: ResolveInfo, name: graphene.String, subpath: graphene.String = '') -> Directory:
+        """ Browse directories
+            name - ResourceLocation -> name
+            subpath - string path of current directory
+        """
         model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == name).first()
         if not model:
             raise error.ResourcePathError('Invalid path {}'.format(name))
@@ -71,7 +83,8 @@ class Query(graphene.ObjectType):
             output.append(val.data)
         return output
 
-    def resolve_playlist_items(self, info: ResolveInfo, name: graphene.String, path:graphene.String) -> List[PlaylistItem]:
+    def resolve_playlist_items(self, info: ResolveInfo, name: graphene.String, path: graphene.String) -> List[PlaylistItem]:
+        """Get list of playlist items"""
         model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == name).first()
         if not model:
             raise error.ResourcePathError('Invalid path {}'.format(name))
@@ -83,4 +96,3 @@ class Query(graphene.ObjectType):
             item = PlaylistItem(index=p.index, name=p.name, path=urlpath)
             output.append(item)
         return output
-

@@ -8,16 +8,16 @@ import tornado.web
 from playlistcast import db, error
 
 
-class BrowseResourceHandler(tornado.web.StaticFileHandler):
+class BrowseResourceHandler(tornado.web.StaticFileHandler): # pylint: disable=W0223
     """Serve attached resources"""
-    # pylint: disable=W0223
-    def initialize(self):
+
+    def initialize(self): # pylint: disable=W0221
         """Override hack"""
-        self.root = ''
+        self.root = '' # pylint: disable=W0201
 
     def set_etag_header(self):
         """Override hack"""
-        pass
+        pass # pylint: disable=W0107
 
     @classmethod
     def get_absolute_path(cls, root: str, path: str):
@@ -28,15 +28,16 @@ class BrowseResourceHandler(tornado.web.StaticFileHandler):
         """Override hack"""
         return absolute_path
 
-    async def get(self, *args, **kwargs):
+    async def get(self, path: str, include_body: bool = True):
         """Get request"""
-        a = args[0].split('/')
-        model = db.session.query(db.ResourceLocation).filter(db.ResourceLocation.name == a[0]).first()
+        a = path.split('/')
+        model = db.session.query(db.ResourceLocation)\
+            .filter(db.ResourceLocation.name == a[0]).first()
         if not model:
-            raise error.ResourcePathError('Invalid path {}'.format(args[0]))
+            raise error.ResourcePathError('Invalid path {}'.format(path))
         uri = '/resource/'
         if len(a) > 0:
-            uri += args[0]
+            uri += path
             path = os.path.join(model.location, '/'.join(a[1:]))
         else:
             path = model.location

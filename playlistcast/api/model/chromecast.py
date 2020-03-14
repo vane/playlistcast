@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 """"Device model"""
 import asyncio
+from typing import Dict
 import graphene
 import pychromecast
-from typing import Dict
 from pychromecast.controllers import media
 from graphql.execution.base import ResolveInfo
 from playlistcast import error, util
@@ -182,7 +182,7 @@ class ChromecastSubtitleEnable(graphene.Mutation):
     def mutate(self,
                info: ResolveInfo,
                uid: graphene.String,
-               track_id:graphene.Int) -> graphene.Boolean:
+               track_id: graphene.Int) -> graphene.Boolean:
         """Method to change subtitle track"""
         if uid not in CHROMECAST:
             raise error.ChromecastUUIDError(uid=uid)
@@ -207,8 +207,8 @@ class ChromecastSubtitleDisable(graphene.Mutation):
         data = CHROMECAST[uid]
         data.device.media_controller.disable_subtitle()
         return True
-# HELPER CLASSES
 
+# HELPER CLASSES
 class ChromecastDevice:
     """Device with api and interface data"""
     def __init__(self, device: pychromecast.Chromecast, data: ChromecastModel):
@@ -226,7 +226,7 @@ class ChromecastDevice:
 
     def new_media_status(self, status: media.MediaStatus):
         """Subscribe for chromecast status messages"""
-        s = util.convert(status, MediaStatus, ('uuid','subtitle_tracks'))
+        s = util.convert(status, MediaStatus, ('uuid', 'subtitle_tracks'))
         subtitle_tracks = list()
         for tr in status.subtitle_tracks:
             if 'type' in tr and tr['type'] == 'TEXT':

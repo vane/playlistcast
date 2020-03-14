@@ -9,12 +9,14 @@ from playlistcast import db
 from .subscription import SubscriptionModel
 
 class File(graphene.ObjectType):
+    """File representation"""
     name = graphene.String()
     size = graphene.String()
     suffix = graphene.String()
     is_dir = graphene.Boolean()
 
 class Directory(graphene.ObjectType):
+    """Directory representation"""
     resource_name = graphene.String()
     resource_path = graphene.String()
     subpath = graphene.String()

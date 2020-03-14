@@ -49,7 +49,7 @@ def convert(src, dest, ignore=None):
     for attr in out.__dict__:
         if ignore is not None and attr in ignore:
             continue
-        value = accessor    (src, attr)
+        value = accessor(src, attr)
         setattr(out, attr, value)
     return out
 
