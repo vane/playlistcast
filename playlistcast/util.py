@@ -41,11 +41,14 @@ def get_ip() -> str:
 def convert(src, dest, ignore=None):
     """Copy object attributes from source(src) to destination(dst) and ignore some of attributes"""
     out = dest()
-    accessor = getattr
     if isinstance(src, dict):
         def get_dict(src, attr):
-            return src.get(attr)
+            return src.get(attr, None)
         accessor = get_dict
+    else:
+        def get_attr(src, attr):
+            return getattr(src, attr, None)
+        accessor = get_attr
     for attr in out.__dict__:
         if ignore is not None and attr in ignore:
             continue
