@@ -41,6 +41,12 @@ mutation put($data: ResourceLocationInput!, $id:ID!) {
 }
 `;
 
+const LIST_DIR = (name, subpath) => gql`
+query {
+  listDirectory(name:${name}, subpath:${subpath})
+}
+`;
+
 
 export const resourceLocationAll = (store) => client.query({
   query: ALL(),
@@ -74,4 +80,12 @@ export const resourceLocationChange = (store, data, id) => client.mutate({
   mutation: CHANGE(),
 }).then(() => {
   resourceLocationAll(store);
+}).catch((error) => console.error(error));
+
+export const listDirectory = (store, name, subpath) => client.query({
+  query: LIST_DIR(name, subpath),
+  fetchPolicy: 'network-only',
+}).then((resp) => {
+  console.log(resp.data);
+  store.refresh();
 }).catch((error) => console.error(error));
